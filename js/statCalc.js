@@ -2,6 +2,11 @@ var LevelAttribute = function(level, unitClass, stat) {
 	this.displayedLevel = level;
 	this.unitClass = unitClass;
 	this.stat = stat;
+	
+	// TODO: implement more of this
+	this.tier1Level = 0;
+	this.tier2Level = 0;
+	this.displayedLevel = (tier2Level > 0 ? (this.unitClass.special ? tier2Level + 20 : tier2Level) : tier1Level);
 }
 
 /*var ClassChangeType = { 
@@ -18,12 +23,13 @@ var ClassChange = function(type, level, targetClass) {
 
 
 var StatCalculator = function() {
-	this.prepromoteCap = 20;
-	this.promotedCap = 20;
-	this.specialCap = 40;
+	this.extraLevel = 0;
 	this.baseSet = "standard";
 	this.classChanges = [];
 }
+StatCalculator.prototype.const_tier_1_cap = 20;
+StatCalculator.prototype.const_tier_2_cap = 20;
+StatCalculator.prototype.const_tier_special_cap = 40;
 
 StatCalculator.prototype.setCharacter = function(character) {
 	this.character = CharacterSet[character];
@@ -41,7 +47,7 @@ StatCalculator.prototype.compute = function() {
 	
 	averageStats.push(startingLevel);
 	
-	for (var i=baseStat.level+1; i<=this.prepromoteCap; i++) {
+	for (var i=baseStat.level+1; i<=this.const_tier_1_cap; i++) {
 		var thisLevel = new LevelAttribute(i, this.character.baseClass /*to be changed*/, {});
 		for (var stat in this.character.growth) {
 			var growthRate = this.character.growth[stat] + this.character.baseClass.growth[stat];

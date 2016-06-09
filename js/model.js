@@ -32,6 +32,14 @@ var ClassSet = {
 		maxStat : new Stat(55, 27, 25, 35, 35, 28, 26, 34),
 	},
 	
+	singer : {
+		name	: "Songstress",
+		tier	: "special",
+		base	: new Stat(16, 3, 0, 6, 5, 3, 2, 3),
+		growth	: new Stat(0, 10, 0, 20, 20, 20, 0, 0),
+		maxStat	: new Stat(45, 28, 27, 31, 31, 35, 27, 28),
+	},
+	
 	darkFlier : {
 		name	: "Dark Falcon",
 		tier	: "special",
@@ -43,6 +51,16 @@ var ClassSet = {
 }
 
 var CharacterSet = {
+	azura : {
+		name	: "Azura",
+		baseClass : ClassSet.singer,
+		base : {
+			standard : new BaseStat(1, 16, 5, 2, 8, 8, 6, 4, 7),
+		},
+		growth	: new Stat(25, 50, 25, 60, 60, 40, 15, 35),
+		mod		: new Stat(0, 0, 0, 1, 3, 0, -3, 0),
+	},
+	
 	kaze : {
 		name	: "Kaze",
 		baseClass : ClassSet.ninja,

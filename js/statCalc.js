@@ -84,13 +84,17 @@ StatCalculator.prototype.addClassChange = function(level, targetClass) {
 	this.classChanges.push(new ClassChange(level, targetClass))
 }
 
+StatCalculator.prototype.resetClassChange = function() {
+	this.classChanges = [];
+}
+
 StatCalculator.prototype.compute = function() {
 	var averageStats = [];
 	
 	// Starting level is defined by character base
 	var baseStat = this.character.base[this.baseSet];
 	var startingLevel = new LevelAttribute(this.character.baseClass, baseStat.stat);
-	if (this.character.baseClass.tier == "tier1")
+	if (this.character.baseClass.tier != "tier2")
 		startingLevel.setInitialLevel(baseStat.level, 0);
 	else
 		startingLevel.setInitialLevel(0, baseStat.level);
@@ -116,8 +120,10 @@ StatCalculator.prototype.compute = function() {
 			thisLevel.increaseLevel(prev);
 			
 			for (var attr in this.character.growth) {
-				var growth = (this.character.growth[attr] + prev.unitClass.growth[attr])/100;
-				thisLevel.stat[attr] = Math.min(averageStats[averageStats.length-1].stat[attr] + growth, prev.unitClass.maxStat[attr]);	// Does not grow if stat is at cap
+				var growth = (this.character.growth[attr] + prev.unitClass.growth[attr]);
+				// Does not grow if stat is at cap
+				// The extra multiplication eliminates javascript floating point precision problem
+				thisLevel.stat[attr] = Math.min((averageStats[averageStats.length-1].stat[attr]*1000 + growth*10)/1000, prev.unitClass.maxStat[attr]);	
 			}
 		}
 		prev = thisLevel;

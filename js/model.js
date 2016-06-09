@@ -18,7 +18,7 @@ var ClassSet = {
 	ninja : {
 		name 	: "Ninja",
 		tier	: "tier1",
-		promoteTo : [ this.jounin ],
+		promoteTo : [ "jounin" ],
 		base 	: new Stat(16, 3, 0, 8, 8, 1, 3, 3),
 		growth 	: new Stat(5, 5, 0, 20, 20, 0, 5, 15),
 		maxStat : new Stat(35, 17, 15, 25, 25, 18, 19, 20),

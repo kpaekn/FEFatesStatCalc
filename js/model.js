@@ -17,7 +17,8 @@ var BaseStat = function(level, HP, Str, Mag, Skl, Spd, Lck, Def, Res) {
 var ClassSet = {
 	ninja : {
 		name 	: "Ninja",
-		promoteTo : "jounin",
+		tier	: "tier1",
+		promoteTo : [ this.jounin ],
 		base 	: new Stat(16, 3, 0, 8, 8, 1, 3, 3),
 		growth 	: new Stat(5, 5, 0, 20, 20, 0, 5, 15),
 		maxStat : new Stat(35, 17, 15, 25, 25, 18, 19, 20),
@@ -25,6 +26,7 @@ var ClassSet = {
 	
 	jounin : {
 		name 	: "Master Ninja",
+		tier	: "tier2",
 		base 	: new Stat(17, 5, 0, 10, 11, 2, 4, 8),
 		growth 	: new Stat(5, 5, 0, 20, 20, 0, 5, 20),
 		maxStat : new Stat(55, 27, 25, 35, 35, 28, 26, 34),
@@ -32,6 +34,7 @@ var ClassSet = {
 	
 	darkFlier : {
 		name	: "Dark Falcon",
+		tier	: "special",
 		base	: new Stat(17, 4, 7, 5, 9, 4, 3, 9),
 		growth	: new Stat(0, 10, 15, 5, 15, 15, 0, 20),
 		maxStat	: new Stat(45, 27, 32, 28, 33, 32, 26, 34),

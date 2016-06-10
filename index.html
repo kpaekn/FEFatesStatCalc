@@ -12,22 +12,48 @@
 	</head>
 	
 	<body>
-		<div id="page-all" style="margin: 10px 10px 10px 10px">
-		<p>
-			<h4>Unit Selection</h4>
-			<select id="unit-select"><option value="none" disabled>Select a unit</option></select>
-			<button id="reset">Reset</button>
-		</p>
-		
-		<p>
-			<h4>Class Change Options</h4>
-			<select id="level-change-select" disabled><option value="none" disabled>Select a level</option></select>
-			<select id="class-change-select" disabled><option value="none" disabled>Select a class</option></select>
-			<button id="add-seal">Add class change</button>
-		</p>
-		
-		<div id="class-change-list"></div>
-		<div id="table-div"></div>
+		<div id="container" style="margin: 10px 10px 10px 10px, width: 100%">
+			<div style="float : left">
+				<p>
+					<h4>Unit Selection</h4>
+					<select id="unit-select"><option value="none">Select a unit</option></select>
+					<div id="avatar-custom">
+						Boon
+						<select id="boon-select">
+							<option class="boon" value="HP" selected>HP</option>
+							<option class="boon" value="Str" disabled>Strength</option>
+							<option class="boon" value="Mag">Magic</option>
+							<option class="boon" value="Skl">Skill</option>
+							<option class="boon" value="Spd">Speed</option>
+							<option class="boon" value="Lck">Luck</option>
+							<option class="boon" value="Def">Defense</option>
+							<option class="boon" value="Res">Resistance</option>
+						</select>
+						Bane
+						<select id="bane-select">
+							<option class="bane" value="HP" disabled>HP</option>
+							<option class="bane" value="Str" selected>Strength</option>
+							<option class="bane" value="Mag">Magic</option>
+							<option class="bane" value="Skl">Skill</option>
+							<option class="bane" value="Spd">Speed</option>
+							<option class="bane" value="Lck">Luck</option>
+							<option class="bane" value="Def">Defense</option>
+							<option class="bane" value="Res">Resistance</option>
+						</select>
+					</div>
+				</p>
+				
+				<p>
+					<h4>Class Change Options</h4>
+					<select id="level-change-select" disabled><option value="none" disabled>Select a level</option></select>
+					<select id="class-change-select" disabled><option value="none" disabled>Select a class</option></select>
+					<button id="add-seal">Add class change</button>
+					<button id="reset">Reset</button>
+				</p>
+			
+				<div id="class-change-list"></div>
+			</div>
+			<div id="table-div"></div>
 		</div>
 	
 	

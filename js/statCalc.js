@@ -13,6 +13,7 @@ const FIX = 1000;	// Hack-ish fix for floating point operation
 var LevelAttribute = function(unitClass, stat) {
 	this.unitClass = unitClass;
 	this.stat = stat;
+	this.statCap = {};
 	this.tier1Level = 0;
 	this.tier2Level = 0;
 }
@@ -103,7 +104,7 @@ StatCalculator.prototype.getAvailableLevelRange = function() {
 	var latestClassChange = this.getLatestClassChange();
 	if (latestClassChange) {
 		curClass = latestClassChange.targetClass;
-		baseLevel = (latestClassChange.promotion ? 0 : latestClassChange.level);
+		baseLevel = (latestClassChange.promotion ? 1 : latestClassChange.level);
 	}else {
 		curClass = this.character.baseClass;
 		baseLevel = this.character.base[this.baseSet].level;
@@ -126,7 +127,7 @@ StatCalculator.prototype.getAvaiableClassChange = function(level) {
 	
 	var ret = {};	
 	if (curClass.tier == "tier1" ) {
-		if (level > LEVEL_PROMOTION) {
+		if (level >= LEVEL_PROMOTION) {
 			ret.masterSeal = {};
 			for (var i=0; i<curClass.promoteTo.length; i++)
 				ret.masterSeal[curClass.promoteTo[i]] = ClassSet[curClass.promoteTo[i]];
@@ -178,6 +179,8 @@ StatCalculator.prototype.compute = function() {
 		startingLevel.setInitialLevel(baseStat.level, 0);
 	else
 		startingLevel.setInitialLevel(0, baseStat.level);
+	for (var attr in startingLevel.stat)
+		startingLevel.statCap[attr] = this.character.baseClass.maxStat[attr] + this.character.cap[attr];
 	averageStats[0].push(startingLevel);
 	var prev = startingLevel;
 	
@@ -191,6 +194,7 @@ StatCalculator.prototype.compute = function() {
 			thisLevel.increaseLevel(prev);
 			
 			for (var attr in newClass.base) {
+				thisLevel.statCap[attr] = newClass.maxStat[attr] + this.character.cap[attr];
 				thisLevel.stat[attr] = (prev.stat[attr]*FIX + newClass.base[attr]*FIX - oldClass.base[attr]*FIX)/FIX;
 			}
 			averageStats[++i] = [];
@@ -203,7 +207,8 @@ StatCalculator.prototype.compute = function() {
 				var growth = (this.character.growth[attr] + prev.unitClass.growth[attr]);
 				// Does not grow if stat is at cap
 				// The extra multiplication eliminates javascript floating point precision problem
-				thisLevel.stat[attr] = Math.min((prev.stat[attr]*FIX + growth*FIX/100)/FIX, prev.unitClass.maxStat[attr]);	
+				thisLevel.statCap[attr] = prev.statCap[attr];
+				thisLevel.stat[attr] = Math.min((prev.stat[attr]*FIX + growth*FIX/100)/FIX, thisLevel.statCap[attr]);	
 			}
 		}
 		prev = thisLevel;

@@ -86,7 +86,7 @@ var ClassSet = {
 	apoth : {
 		name	: "Apothecary",
 		tier	: "tier1",
-		promoteTo : [ "merchant", "merchanist" ],
+		promoteTo : [ "merchant", "mechanist" ],
 		base	: new Stat(18, 6, 0, 4, 4, 2, 6, 2),
 		growth	: new Stat(20, 20, 0, 10, 10, 5, 10, 5),
 		maxStat	: new Stat(45, 24, 15, 19, 19, 21, 23, 20),
@@ -550,7 +550,7 @@ var CharacterSet = {
 		name	: "Corrin",
 		baseClass : ClassSet.nohrPrince,
 		base	: {
-			standard : {}
+			Standard : {}
 		},
 		growth	: {},
 		cap		: {},
@@ -610,15 +610,15 @@ var CharacterSet = {
 		
 		initialize : function(boon, bane) {
 			var keySet = new Stat(0, 0, 0, 0, 0, 0, 0, 0);
-			this.base.standard.level = 1;
-			this.base.standard.stat = {};
+			this.base.Standard.level = 1;
+			this.base.Standard.stat = {};
 			for (var attr in keySet) {
 				if (attr == boon)
-					this.base.standard.stat[attr] = this.baseMod.none[attr] + this.baseMod.boon[attr];
+					this.base.Standard.stat[attr] = this.baseMod.none[attr] + this.baseMod.boon[attr];
 				else if (attr == bane)
-					this.base.standard.stat[attr] = this.baseMod.none[attr] + this.baseMod.bane[attr];
+					this.base.Standard.stat[attr] = this.baseMod.none[attr] + this.baseMod.bane[attr];
 				else
-					this.base.standard.stat[attr] = this.baseMod.none[attr];
+					this.base.Standard.stat[attr] = this.baseMod.none[attr];
 				this.growth[attr] = this.growthMod.none[attr] + this.growthMod.boon[boon][attr] + this.growthMod.bane[bane][attr];
 				this.cap[attr] = this.capMod.boon[boon][attr] + this.capMod.bane[bane][attr];
 			}
@@ -628,8 +628,8 @@ var CharacterSet = {
 	azura : {
 		name	: "Azura",
 		baseClass : ClassSet.singer,
-		base : {
-			standard : new BaseStat(1, 16, 5, 2, 8, 8, 6, 4, 7),
+		base 	: {
+			Standard : new BaseStat(1, 16, 5, 2, 8, 8, 6, 4, 7),
 		},
 		growth	: new Stat(25, 50, 25, 60, 60, 40, 15, 35),
 		cap		: new Stat(0, 0, 0, 1, 3, 0, -3, 0),
@@ -639,10 +639,481 @@ var CharacterSet = {
 		name	: "Kaze",
 		baseClass : ClassSet.ninja,
 		base: {
-			standard : new BaseStat(3, 19, 7, 0, 9, 12, 4, 5, 10),
-			conquest : new BaseStat(9, 22, 9, 0, 12, 16, 6, 7, 13),
+			Standard : new BaseStat(3, 19, 7, 0, 9, 12, 4, 5, 10),
+			Conquest : new BaseStat(9, 22, 9, 0, 12, 16, 6, 7, 13),
 		},
 		growth	: new Stat(55, 40, 0, 45, 65, 20, 20, 35),
 		cap		: new Stat(0, -2, 0, 2, 3, -2, -1, 0),
+	},
+	
+	gunter : {
+		name	: "Gunter",
+		baseClass : ClassSet.greatKnight,
+		base	: {
+			Standard : new BaseStat(3, 24, 10, 0, 15, 8, 9, 10, 4),
+			Conquest : new BaseStat(10, 34, 17, 0, 24, 10, 13, 20, 6),
+		},
+		growth	: new Stat(15, 5, 0, 5, 0, 15, 5, 5),
+		cap		: new Stat(0, 2, 0, 1, -2, 0, 2, -2),
+	},
+
+	felicia : {
+		name	: "Felicia",
+		baseClass : ClassSet.maid,
+		base	: {
+			"First Joining" : new BaseStat(1, 19, 5, 9, 10, 10, 12, 5, 9),
+			"Second Joining" : new BaseStat(13, 24, 7, 14, 15, 17, 20, 7, 14),
+		},
+		growth	: new Stat(40, 10, 35, 30, 40, 55, 15, 35),
+		cap		: new Stat(0, -2, 2, 0, 1, 0, -1, 1),
+	},
+
+	jakob : {
+		name	: "Jakob",
+		baseClass : ClassSet.maid,
+		base	: {
+			"First Joining" : new BaseStat(1, 21, 8, 6, 12, 9, 10, 7, 6),
+			"Second Joining" : new BaseStat(13, 27, 13, 9, 19, 15, 17, 11, 10),
+		},
+		growth	: new Stat(50, 35, 15, 40, 35, 45, 25, 25),
+		cap		: new Stat(0, 2, -2, 2, 0, -1, 0, -1),
+	},
+
+	silas : {
+		name	: "Silas",
+		baseClass : ClassSet.cavalier,
+		base	: {
+			Standard : new BaseStat(6, 22, 11, 0, 9, 8, 7, 10, 5),
+		},
+		growth	: new Stat(40, 45, 5, 50, 40, 40, 40, 25),
+		cap		: new Stat(0, 1, 0, 2, 0, -1, 0, -1),
+	},
+
+	mozume : {
+		name	: "Mozu",
+		baseClass : ClassSet.villager,
+		base	: {
+			Standard : new BaseStat(1, 16, 6, 0, 5, 7, 3, 4, 1),
+		},
+		growth	: new Stat(40, 50, 15, 60, 65, 55, 45, 40),
+		cap		: new Stat(0, 0, 0, 1, 1, 1, 0, -2),
+	},
+
+	rinkah : {
+		name	: "Rinkah",
+		baseClass : ClassSet.oni,
+		base	: {
+			Standard : new BaseStat(4, 20, 8, 2, 6, 8, 5, 10, 3),
+		},
+		growth	: new Stat(20, 25, 15, 50, 45, 35, 45, 20),
+		cap		: new Stat(0, -1, 0, -2, 1, 0, 2, 0),
+	},
+
+	sakura : {
+		name	: "Sakura",
+		baseClass : ClassSet.miko,
+		base	: {
+			Standard : new BaseStat(1, 16, 3, 6, 5, 7, 9, 5, 7),
+			Revelation : new BaseStat(4, 19, 4, 8, 6, 10, 11, 7, 8),
+		},
+		growth	: new Stat(45, 30, 50, 40, 40, 55, 30, 20),
+		cap		: new Stat(0, 0, 2, -1, 1, 0, -1, 0),
+	},
+
+	hana : {
+		name	: "Hana",
+		baseClass : ClassSet.samurai,
+		base	: {
+			Standard : new BaseStat(4, 20, 9, 0, 11, 11, 5, 6, 9),
+			Revelation : new BaseStat(4, 20, 7, 0, 9, 11, 5, 6, 9),
+		},
+		growth	: new Stat(25, 55, 10, 45, 55, 25, 20, 30),
+		cap		: new Stat(0, 1, 0, 1, 2, -1, -3, 1),
+	},
+
+	tsubaki : {
+		name	: "Subaki",
+		baseClass : ClassSet.pegKnight,
+		base	: {
+			Standard : new BaseStat(5, 22, 8, 0, 13, 10, 7, 9, 10),
+		},
+		growth	: new Stat(55, 30, 20, 50, 20, 25, 45, 5),
+		cap		: new Stat(0, -1, 0, 2, -2, -1, 3, -1),
+	},
+
+	saizou : {
+		name	: "Saizo",
+		baseClass : ClassSet.ninja,
+		base	: {
+			Standard : new BaseStat(7, 23, 11, 3, 14, 11, 9, 9, 7),
+			Revelation : new BaseStat(9, 23, 11, 3, 15, 12, 9, 9, 8),
+		},
+		growth	: new Stat(40, 50, 45, 60, 30, 55, 45, 10),
+		cap		: new Stat(0, 1, 0, 3, -2, 0, 1, -2),
+	},
+
+	orochi : {
+		name	: "Orochi",
+		baseClass : ClassSet.diviner,
+		base	: {
+			Standard : new BaseStat(5, 20, 0, 9, 11, 7, 6, 5, 10),
+			Revelation : new BaseStat(7, 20, 1, 10, 12, 7, 6, 5, 10),
+		},
+		growth	: new Stat(35, 5, 65, 50, 15, 35, 25, 45),
+		cap		: new Stat(0, 0, 3, 2, -2, -1, -2, 1),
+	},
+
+	hinoka : {
+		name	: "Hinoka",
+		baseClass : ClassSet.pegKnight,
+		base	: {
+			Standard : new BaseStat(8, 23, 9, 4, 13, 16, 12, 9, 15),
+			Revelation : new BaseStat(17, 24, 14, 5, 18, 23, 16, 12, 23),
+		},
+		growth	: new Stat(45, 45, 15, 40, 45, 40, 35, 40),
+		cap		: new Stat(0, 1, -1, -1, 1, 0, -1, 2),
+	},
+
+	azama : {
+		name	: "Azama",
+		baseClass : ClassSet.monk,
+		base	: {
+			Standard : new BaseStat(7, 24, 9, 7, 9, 10, 12, 10, 8),
+			Revelation : new BaseStat(13, 28, 10, 8, 11, 13, 16, 14, 10),
+		},
+		growth	: new Stat(55, 50, 20, 40, 45, 40, 40, 20),
+		cap		: new Stat(0, 2, -3, 0, 1, 0, 1, 0),
+	},
+
+	setsuna : {
+		name	: "Setsuna",
+		baseClass : ClassSet.archer,
+		base	: {
+			Standard : new BaseStat(3, 19, 8, 0, 9, 10, 6, 5, 3),
+			Revelation : new BaseStat(11, 25, 12, 0, 15, 17, 11, 8, 10),
+		},
+		growth	: new Stat(30, 20, 0, 30, 60, 30, 15, 40),
+		cap		: new Stat(0, 0, 0, 1, 3, -1, -1, -1),
+	},
+
+	hayato : {
+		name	: "Hayato",
+		baseClass : ClassSet.diviner,
+		base	: {
+			Standard : new BaseStat(1, 16, 1, 4, 5, 7, 8, 4, 5),
+			Revelation : new BaseStat(9, 22, 2, 9, 9, 13, 11, 5, 7),
+		},
+		growth	: new Stat(50, 30, 40, 30, 45, 60, 40, 20),
+		cap		: new Stat(0, 0, 1, -1, 2, 1, -1, -1),
+	},
+
+	oboro : {
+		name	: "Oboro",
+		baseClass : ClassSet.lancer,
+		base	: {
+			Standard : new BaseStat(10, 25, 13, 0, 11, 12, 11, 13, 8),
+		},
+		growth	: new Stat(30, 40, 20, 40, 40, 40, 40, 30),
+		cap		: new Stat(0, 1, -1, 1, 1, -1, 1, -1),
+	},
+
+	hinata : {
+		name	: "Hinata",
+		baseClass : ClassSet.samurai,
+		base	: {
+			Standard : new BaseStat(10, 26, 11, 0, 9, 14, 10, 12, 4),
+		},
+		growth	: new Stat(55, 35, 0, 25, 15, 45, 45, 15),
+		cap		: new Stat(0, 1, 0, -1, -2, 0, 2, 0),
+	},
+
+	takumi : {
+		name	: "Takumi",
+		baseClass : ClassSet.archer,
+		base	: {
+			Standard : new BaseStat(11, 26, 13, 0, 17, 11, 13, 10, 4),
+		},
+		growth	: new Stat(50, 35, 0, 60, 40, 45, 35, 20),
+		cap		: new Stat(0, 1, 0, 3, -2, 1, 0, -2),
+	},
+
+	kagero : {
+		name	: "Kagero",
+		baseClass : ClassSet.ninja,
+		base	: {
+			Standard : new BaseStat(10, 22, 15, 0, 10, 12, 7, 9, 10),
+		},
+		growth	: new Stat(30, 65, 0, 20, 50, 30, 25, 40),
+		cap		: new Stat(0, 3, 0, -1, -1, 0, -1, 1),
+	},
+
+	kaden : {
+		name	: "Kaden",
+		baseClass : ClassSet.kitsune,
+		base	: {
+			Standard : new BaseStat(14, 30, 15, 1, 12, 19, 14, 9, 14),
+		},
+		growth	: new Stat(45, 40, 10, 25, 45, 50, 35, 40),
+		cap		: new Stat(0, 1, 0, -3, 2, 1, -2, 2),
+	},
+
+	ryoma : {
+		name	: "Ryoma",
+		baseClass : ClassSet.swordSaint,
+		base	: {
+			Standard : new BaseStat(4, 36, 20, 2, 18, 24, 20, 16, 13),
+		},
+		growth	: new Stat(50, 45, 0, 50, 45, 40, 35, 25),
+		cap		: new Stat(0, 1, 0, 2, 1, 1, -2, -2),
+	},
+
+	elise : {
+		name	: "Elise",
+		baseClass : ClassSet.troubadour,
+		base	: {
+			Standard : new BaseStat(5, 19, 2, 11, 5, 10, 14, 4, 11),
+			Revelation : new BaseStat(7, 20, 2, 13, 7, 11, 16, 4, 13),
+		},
+		growth	: new Stat(30, 5, 65, 25, 55, 70, 15, 40),
+		cap		: new Stat(0, -1, 3, -2, 1, 1, -3, 1),
+	},
+
+	effie : {
+		name	: "Effie",
+		baseClass : ClassSet.knight,
+		base	: {
+			Standard : new BaseStat(6, 23, 13, 0, 8, 5, 10, 12, 4),
+			Revelation : new BaseStat(8, 24, 14, 0, 9, 5, 11, 13, 4),
+		},
+		growth	: new Stat(35, 60, 0, 35, 50, 50, 35, 30),
+		cap		: new Stat(0, 3, 0, -1, 1, 0, -1, -1),
+	},
+
+	arthur : {
+		name	: "Arthur",
+		baseClass : ClassSet.fighter,
+		base	: {
+			Standard : new BaseStat(7, 24, 12, 0, 9, 8, 1, 9, 4),
+			Revelation : new BaseStat(9, 26, 13, 0, 10, 9, 1, 9, 4),
+		},
+		growth	: new Stat(50, 45, 0, 55, 35, 5, 45, 20),
+		cap		: new Stat(0, 1, 0, 3, 0, -3, 1, -1),
+	},
+
+	odin : {
+		name	: "Odin",
+		baseClass : ClassSet.mage,
+		base	: {
+			Standard : new BaseStat(5, 21, 5, 8, 10, 7, 9, 6, 7),
+			Revelation : new BaseStat(12, 24, 8, 12, 12, 10, 12, 7, 10),
+		},
+		growth	: new Stat(55, 35, 30, 55, 35, 60, 40, 20),
+		cap		: new Stat(0, 0, 1, 1, -1, 1, 0, -1),
+	},
+
+	niles : {
+		name	: "Niles",
+		baseClass : ClassSet.outlaw,
+		base	: {
+			Standard : new BaseStat(8, 22, 9, 5, 9, 15, 6, 7, 12),
+			Revelation : new BaseStat(14, 24, 11, 6, 11, 17, 7, 10, 16),
+		},
+		growth	: new Stat(40, 35, 20, 40, 50, 30, 30, 40),
+		cap		: new Stat(0, -2, 0, -1, 3, 0, 0, 1),
+	},
+
+	nyx : {
+		name	: "Nyx",
+		baseClass : ClassSet.mage,
+		base	: {
+			Standard : new BaseStat(9, 20, 1, 12, 5, 11, 3, 4, 8),
+		},
+		growth	: new Stat(30, 5, 50, 35, 50, 20, 15, 30),
+		cap		: new Stat(0, 0, 3, -2, 2, -1, -2, 1),
+	},
+
+	camilla : {
+		name	: "Camilla",
+		baseClass : ClassSet.revenant_knight,
+		base	: {
+			Standard : new BaseStat(1, 30, 19, 11, 15, 19, 12, 18, 15),
+		},
+		growth	: new Stat(40, 50, 25, 50, 55, 25, 35, 45),
+		cap		: new Stat(0, 1, -1, 1, 1, -2, 1, 0),
+	},
+
+	selena : {
+		name	: "Selena",
+		baseClass : ClassSet.mercenary,
+		base	: {
+			Standard : new BaseStat(10, 24, 12, 3, 12, 15, 9, 11, 8),
+		},
+		growth	: new Stat(40, 30, 5, 25, 45, 30, 45, 30),
+		cap		: new Stat(0, -1, 0, -1, 2, 0, 1, 0),
+	},
+
+	beruka : {
+		name	: "Beruka",
+		baseClass : ClassSet.wyvernRider,
+		base	: {
+			Standard : new BaseStat(9, 23, 13, 0, 14, 9, 10, 14, 7),
+		},
+		growth	: new Stat(45, 30, 10, 55, 30, 45, 40, 25),
+		cap		: new Stat(0, -1, 0, 2, -2, 0, 2, -1),
+	},
+
+	laslow : {
+		name	: "Laslow",
+		baseClass : ClassSet.mercenary,
+		base	: {
+			Standard : new BaseStat(12, 28, 15, 0, 16, 13, 14, 10, 7),
+			Revelation : new BaseStat(16, 30, 17, 0, 19, 16, 16, 12, 8),
+		},
+		growth	: new Stat(50, 45, 0, 45, 30, 55, 35, 25),
+		cap		: new Stat(0, 1, 0, 2, -1, 1, -1, -1),
+	},
+
+	peri : {
+		name	: "Peri",
+		baseClass : ClassSet.cavalier,
+		base	: {
+			Standard : new BaseStat(10, 25, 13, 0, 9, 13, 9, 10, 10),
+			Revelation : new BaseStat(16, 27, 16, 0, 10, 15, 12, 12, 11),
+		},
+		growth	: new Stat(30, 50, 5, 30, 50, 35, 25, 45),
+		cap		: new Stat(0, 1, 0, -1, 1, 0, -2, 2),
+	},
+
+	charlotte : {
+		name	: "Charlotte",
+		baseClass : ClassSet.fighter,
+		base	: {
+			Standard : new BaseStat(10, 28, 15, 0, 10, 13, 9, 8, 2),
+		},
+		growth	: new Stat(65, 55, 0, 35, 50, 45, 20, 5),
+		cap		: new Stat(0, 3, 0, 0, 2, 0, -2, -2),
+	},
+
+	benny : {
+		name	: "Benny",
+		baseClass : ClassSet.knight,
+		base	: {
+			Standard : new BaseStat(15, 31, 15, 0, 15, 6, 12, 19, 10),
+		},
+		growth	: new Stat(50, 40, 0, 50, 10, 35, 55, 45),
+		cap		: new Stat(0, 0, 0, 0, -3, 0, 3, 1),
+	},
+
+	leo : {
+		name	: "Leo",
+		baseClass : ClassSet.darkKnight,
+		base	: {
+			Standard : new BaseStat(2, 34, 14, 20, 14, 15, 15, 16, 20),
+		},
+		growth	: new Stat(45, 25, 55, 35, 45, 45, 30, 45),
+		cap		: new Stat(0, -2, 2, 0, -2, 0, 0, 2),
+	},
+
+	keaton : {
+		name	: "Keaton",
+		baseClass : ClassSet.wolfskin,
+		base	: {
+			Standard : new BaseStat(15, 35, 19, 0, 10, 13, 9, 16, 7),
+		},
+		growth	: new Stat(60, 60, 0, 20, 35, 30, 50, 25),
+		cap		: new Stat(0, 3, 0, -2, -1, 0, 2, -1),
+	},
+
+	xander : {
+		name	: "Xander",
+		baseClass : ClassSet.paladin,
+		base	: {
+			Standard : new BaseStat(4, 38, 23, 4, 18, 15, 20, 23, 11),
+		},
+		growth	: new Stat(45, 50, 5, 40, 35, 60, 40, 15),
+		cap		: new Stat(0, 2, -1, -1, -1, 2, 1, -2),
+	},
+
+	reina : {
+		name	: "Reina",
+		baseClass : ClassSet.kinshiKnight,
+		base	: {
+			Standard : new BaseStat(1, 28, 17, 5, 14, 20, 14, 10, 13),
+			Revelation : new BaseStat(1, 28, 18, 4, 16, 21, 15, 10, 13),
+		},
+		growth	: new Stat(40, 45, 5, 20, 45, 10, 20, 10),
+		cap		: new Stat(0, 2, 0, 0, 2, -1, -2, -1),
+	},
+
+	scarlet : {
+		name	: "Scarlet",
+		baseClass : ClassSet.wyvernLord,
+		base	: {
+			Standard : new BaseStat(1, 30, 23, 4, 17, 19, 14, 22, 6),
+			Revelation : new BaseStat(3, 32, 22, 4, 18, 19, 14, 23, 7),
+		},
+		growth	: new Stat(30, 45, 20, 40, 50, 40, 25, 20),
+		cap		: new Stat(0, 2, 0, 0, 1, -1, 0, -2),
+	},
+
+	flora : {
+		name	: "Flora",
+		baseClass : ClassSet.maid,
+		base	: {
+			Standard : new BaseStat(5, 29, 18, 16, 25, 15, 11, 14, 23),
+		},
+		growth	: new Stat(35, 40, 20, 45, 30, 35, 30, 30),
+		cap		: new Stat(0, 1, -1, 2, 0, -1, 1, -1),
+	},
+
+	shura : {
+		name	: "Shura",
+		baseClass : ClassSet.adventurer,
+		base	: {
+			Standard : new BaseStat(10, 34, 20, 11, 23, 27, 15, 14, 24),
+			Conquest : new BaseStat(2, 31, 18, 10, 21, 24, 13, 13, 21),
+		},
+		growth	: new Stat(30, 25, 10, 20, 35, 30, 15, 35),
+		cap		: new Stat(0, -1, 0, -1, 3, -1, -2, 2),
+	},
+
+	izana : {
+		name	: "Izana",
+		baseClass : ClassSet.exorcist,
+		base	: {
+			Standard : new BaseStat(5, 31, 8, 23, 25, 18, 17, 14, 24),
+		},
+		growth	: new Stat(45, 15, 35, 55, 30, 45, 35, 35),
+		cap		: new Stat(0, 0, 1, 1, -2, 0, 0, 1),
+	},
+
+	yukimura : {
+		name	: "Yukimura",
+		baseClass : ClassSet.mechanist,
+		base	: {
+			Standard : new BaseStat(10, 38, 25, 3, 29, 23, 18, 21, 22),
+		},
+		growth	: new Stat(25, 25, 5, 40, 15, 30, 25, 30),
+		cap		: new Stat(0, -1, 0, 3, -1, 0, -1, 0),
+	},
+
+	fuuga : {
+		name	: "Fuga",
+		baseClass : ClassSet.weaponMaster,
+		base	: {
+			Standard : new BaseStat(10, 41, 29, 0, 27, 25, 18, 29, 15),
+		},
+		growth	: new Stat(20, 20, 0, 15, 5, 20, 10, 10),
+		cap		: new Stat(0, 2, -1, 1, 0, -1, 2, -2),
+	},
+
+	anna : {
+		name	: "Anna",
+		baseClass : ClassSet.outlaw,
+		base	: {
+			Standard : new BaseStat(10, 23, 9, 11, 10, 14, 15, 6, 15),
+		},
+		growth	: new Stat(35, 30, 55, 30, 40, 70, 20, 45),
+		cap		: new Stat(0, -1, 1, 0, -1, 2, -2, 2),
 	},
 }

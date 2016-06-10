@@ -5,7 +5,7 @@ const LEVEL_CAP_STANDARD = 20;
 const LEVEL_CAP_SPECIAL = 40;
 const SPECIAL_LEVEL_MODIFIER = 20;
 const LEVEL_PROMOTION = 10;
-const FIX = 1000;	// Hack-ish fix for floating point operation
+const FIX = 10000;	// Hack-ish fix for floating point operation
 
 /*
  *	LevelAttribute
@@ -74,13 +74,13 @@ var ClassChange = function(level, targetClass) {
  */
 var StatCalculator = function() {
 	this.extraLevel = 0;
-	this.baseSet = "standard";
 	this.classChanges = [];
 }
 
 
-StatCalculator.prototype.setCharacter = function(character) {
+StatCalculator.prototype.setCharacter = function(character, base) {
 	this.character = CharacterSet[character];
+	this.baseSet = base;
 	this.resetClassChange();
 	return this.character;
 }

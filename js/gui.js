@@ -39,16 +39,42 @@ $(document).ready(function() {
 				$("#avatar-custom").hide();
 					
 		if (this.value != "none") {
-			calc.setCharacter(this.value);
+			var base = addBaseSelection(this.value);
+			calc.setCharacter(this.value, base);
 			updateTable();
 			resetLeveSelect();
 		}else
 			resetPanel();
 	});
 	
+	function addBaseSelection(ch) {
+		var baseSelection = $("#base-select").empty().prop("disabled", false);
+		
+		var character = CharacterSet[ch];
+		var baseList = [];
+		for (var key in character.base)
+			baseList.push(key);
+		
+		for (var i=0; i<baseList.length; i++) {
+			baseSelection.append($("<option/>", {
+				text	: baseList[i],
+				value	: baseList[i],
+			}))
+		}
+		
+		// Assume there is at least 1 base
+		return baseList[0];
+	}
+	
+	$("#base-select").change(function() {
+		calc.baseSet = this.value;
+		updateTable();
+	});
+	
 	function resetPanel() {
 		$("#level-change-select").prop("disabled", true).empty().append($("<option/>").text("Select a level"));
 		$("#class-change-select").prop("disabled", true).empty().append($("<option/>").text("Select a class"));
+		$("#base-select").prop("disabled", true).empty().append($("<option/>").text("Select a base"));
 		$("#add-seal").attr("disabled", true);
 		$("#reset").attr("disabled", true);
 	}

@@ -554,6 +554,7 @@ var CharacterSet = {
 		},
 		growth	: {},
 		cap		: {},
+		route	: "All",
 		
 		baseMod	: {
 			none : new Stat(19, 7, 4, 7, 6, 5, 6, 2, 5),
@@ -633,6 +634,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(25, 50, 25, 60, 60, 40, 15, 35),
 		cap		: new Stat(0, 0, 0, 1, 3, 0, -3, 0),
+		route	: "All",
 	},
 	
 	kaze : {
@@ -644,6 +646,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(55, 40, 0, 45, 65, 20, 20, 35),
 		cap		: new Stat(0, -2, 0, 2, 3, -2, -1, 0),
+		route	: "All",
 	},
 	
 	gunter : {
@@ -655,6 +658,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(15, 5, 0, 5, 0, 15, 5, 5),
 		cap		: new Stat(0, 2, 0, 1, -2, 0, 2, -2),
+		route	: "All",
 	},
 
 	felicia : {
@@ -666,6 +670,8 @@ var CharacterSet = {
 		},
 		growth	: new Stat(40, 10, 35, 30, 40, 55, 15, 35),
 		cap		: new Stat(0, -2, 2, 0, 1, 0, -1, 1),
+		route	: "All",
+		promotedNotPromoted : true,
 	},
 
 	jakob : {
@@ -677,6 +683,8 @@ var CharacterSet = {
 		},
 		growth	: new Stat(50, 35, 15, 40, 35, 45, 25, 25),
 		cap		: new Stat(0, 2, -2, 2, 0, -1, 0, -1),
+		route	: "All",
+		promotedNotPromoted : true,
 	},
 
 	silas : {
@@ -687,6 +695,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(40, 45, 5, 50, 40, 40, 40, 25),
 		cap		: new Stat(0, 1, 0, 2, 0, -1, 0, -1),
+		route	: "All",
 	},
 
 	mozume : {
@@ -697,6 +706,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(40, 50, 15, 60, 65, 55, 45, 40),
 		cap		: new Stat(0, 0, 0, 1, 1, 1, 0, -2),
+		route	: "All",
 	},
 
 	rinkah : {
@@ -707,6 +717,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(20, 25, 15, 50, 45, 35, 45, 20),
 		cap		: new Stat(0, -1, 0, -2, 1, 0, 2, 0),
+		route	: "Birthright",
 	},
 
 	sakura : {
@@ -718,6 +729,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(45, 30, 50, 40, 40, 55, 30, 20),
 		cap		: new Stat(0, 0, 2, -1, 1, 0, -1, 0),
+		route	: "Birthright",
 	},
 
 	hana : {
@@ -729,6 +741,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(25, 55, 10, 45, 55, 25, 20, 30),
 		cap		: new Stat(0, 1, 0, 1, 2, -1, -3, 1),
+		route	: "Birthright",
 	},
 
 	tsubaki : {
@@ -739,6 +752,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(55, 30, 20, 50, 20, 25, 45, 5),
 		cap		: new Stat(0, -1, 0, 2, -2, -1, 3, -1),
+		route	: "Birthright",
 	},
 
 	saizou : {
@@ -750,6 +764,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(40, 50, 45, 60, 30, 55, 45, 10),
 		cap		: new Stat(0, 1, 0, 3, -2, 0, 1, -2),
+		route	: "Birthright",
 	},
 
 	orochi : {
@@ -761,6 +776,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(35, 5, 65, 50, 15, 35, 25, 45),
 		cap		: new Stat(0, 0, 3, 2, -2, -1, -2, 1),
+		route	: "Birthright",
 	},
 
 	hinoka : {
@@ -772,6 +788,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(45, 45, 15, 40, 45, 40, 35, 40),
 		cap		: new Stat(0, 1, -1, -1, 1, 0, -1, 2),
+		route	: "Birthright",
 	},
 
 	azama : {
@@ -783,6 +800,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(55, 50, 20, 40, 45, 40, 40, 20),
 		cap		: new Stat(0, 2, -3, 0, 1, 0, 1, 0),
+		route	: "Birthright",
 	},
 
 	setsuna : {
@@ -794,6 +812,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(30, 20, 0, 30, 60, 30, 15, 40),
 		cap		: new Stat(0, 0, 0, 1, 3, -1, -1, -1),
+		route	: "Birthright",
 	},
 
 	hayato : {
@@ -805,6 +824,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(50, 30, 40, 30, 45, 60, 40, 20),
 		cap		: new Stat(0, 0, 1, -1, 2, 1, -1, -1),
+		route	: "Birthright",
 	},
 
 	oboro : {
@@ -815,6 +835,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(30, 40, 20, 40, 40, 40, 40, 30),
 		cap		: new Stat(0, 1, -1, 1, 1, -1, 1, -1),
+		route	: "Birthright",
 	},
 
 	hinata : {
@@ -825,6 +846,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(55, 35, 0, 25, 15, 45, 45, 15),
 		cap		: new Stat(0, 1, 0, -1, -2, 0, 2, 0),
+		route	: "Birthright",
 	},
 
 	takumi : {
@@ -835,6 +857,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(50, 35, 0, 60, 40, 45, 35, 20),
 		cap		: new Stat(0, 1, 0, 3, -2, 1, 0, -2),
+		route	: "Birthright",
 	},
 
 	kagero : {
@@ -845,6 +868,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(30, 65, 0, 20, 50, 30, 25, 40),
 		cap		: new Stat(0, 3, 0, -1, -1, 0, -1, 1),
+		route	: "Birthright",
 	},
 
 	kaden : {
@@ -855,6 +879,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(45, 40, 10, 25, 45, 50, 35, 40),
 		cap		: new Stat(0, 1, 0, -3, 2, 1, -2, 2),
+		route	: "Birthright",
 	},
 
 	ryoma : {
@@ -865,6 +890,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(50, 45, 0, 50, 45, 40, 35, 25),
 		cap		: new Stat(0, 1, 0, 2, 1, 1, -2, -2),
+		route	: "Birthright",
 	},
 
 	elise : {
@@ -876,6 +902,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(30, 5, 65, 25, 55, 70, 15, 40),
 		cap		: new Stat(0, -1, 3, -2, 1, 1, -3, 1),
+		route	: "Conquest",
 	},
 
 	effie : {
@@ -887,6 +914,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(35, 60, 0, 35, 50, 50, 35, 30),
 		cap		: new Stat(0, 3, 0, -1, 1, 0, -1, -1),
+		route	: "Conquest",
 	},
 
 	arthur : {
@@ -898,6 +926,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(50, 45, 0, 55, 35, 5, 45, 20),
 		cap		: new Stat(0, 1, 0, 3, 0, -3, 1, -1),
+		route	: "Conquest",
 	},
 
 	odin : {
@@ -909,6 +938,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(55, 35, 30, 55, 35, 60, 40, 20),
 		cap		: new Stat(0, 0, 1, 1, -1, 1, 0, -1),
+		route	: "Conquest",
 	},
 
 	niles : {
@@ -920,6 +950,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(40, 35, 20, 40, 50, 30, 30, 40),
 		cap		: new Stat(0, -2, 0, -1, 3, 0, 0, 1),
+		route	: "Conquest",
 	},
 
 	nyx : {
@@ -930,6 +961,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(30, 5, 50, 35, 50, 20, 15, 30),
 		cap		: new Stat(0, 0, 3, -2, 2, -1, -2, 1),
+		route	: "Conquest",
 	},
 
 	camilla : {
@@ -940,6 +972,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(40, 50, 25, 50, 55, 25, 35, 45),
 		cap		: new Stat(0, 1, -1, 1, 1, -2, 1, 0),
+		route	: "Conquest",
 	},
 
 	selena : {
@@ -950,6 +983,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(40, 30, 5, 25, 45, 30, 45, 30),
 		cap		: new Stat(0, -1, 0, -1, 2, 0, 1, 0),
+		route	: "Conquest",
 	},
 
 	beruka : {
@@ -960,6 +994,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(45, 30, 10, 55, 30, 45, 40, 25),
 		cap		: new Stat(0, -1, 0, 2, -2, 0, 2, -1),
+		route	: "Conquest",
 	},
 
 	laslow : {
@@ -971,6 +1006,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(50, 45, 0, 45, 30, 55, 35, 25),
 		cap		: new Stat(0, 1, 0, 2, -1, 1, -1, -1),
+		route	: "Conquest",
 	},
 
 	peri : {
@@ -982,6 +1018,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(30, 50, 5, 30, 50, 35, 25, 45),
 		cap		: new Stat(0, 1, 0, -1, 1, 0, -2, 2),
+		route	: "Conquest",
 	},
 
 	charlotte : {
@@ -992,6 +1029,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(65, 55, 0, 35, 50, 45, 20, 5),
 		cap		: new Stat(0, 3, 0, 0, 2, 0, -2, -2),
+		route	: "Conquest",
 	},
 
 	benny : {
@@ -1002,6 +1040,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(50, 40, 0, 50, 10, 35, 55, 45),
 		cap		: new Stat(0, 0, 0, 0, -3, 0, 3, 1),
+		route	: "Conquest",
 	},
 
 	leo : {
@@ -1012,6 +1051,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(45, 25, 55, 35, 45, 45, 30, 45),
 		cap		: new Stat(0, -2, 2, 0, -2, 0, 0, 2),
+		route	: "Conquest",
 	},
 
 	keaton : {
@@ -1022,6 +1062,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(60, 60, 0, 20, 35, 30, 50, 25),
 		cap		: new Stat(0, 3, 0, -2, -1, 0, 2, -1),
+		route	: "Conquest",
 	},
 
 	xander : {
@@ -1032,6 +1073,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(45, 50, 5, 40, 35, 60, 40, 15),
 		cap		: new Stat(0, 2, -1, -1, -1, 2, 1, -2),
+		route	: "Conquest",
 	},
 
 	reina : {
@@ -1043,6 +1085,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(40, 45, 5, 20, 45, 10, 20, 10),
 		cap		: new Stat(0, 2, 0, 0, 2, -1, -2, -1),
+		route	: "Birthright",
 	},
 
 	scarlet : {
@@ -1054,6 +1097,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(30, 45, 20, 40, 50, 40, 25, 20),
 		cap		: new Stat(0, 2, 0, 0, 1, -1, 0, -2),
+		route	: "Birthright",
 	},
 
 	flora : {
@@ -1064,6 +1108,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(35, 40, 20, 45, 30, 35, 30, 30),
 		cap		: new Stat(0, 1, -1, 2, 0, -1, 1, -1),
+		route	: "Conquest",
 	},
 
 	shura : {
@@ -1075,6 +1120,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(30, 25, 10, 20, 35, 30, 15, 35),
 		cap		: new Stat(0, -1, 0, -1, 3, -1, -2, 2),
+		route	: "All",
 	},
 
 	izana : {
@@ -1085,6 +1131,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(45, 15, 35, 55, 30, 45, 35, 35),
 		cap		: new Stat(0, 0, 1, 1, -2, 0, 0, 1),
+		route	: "All",
 	},
 
 	yukimura : {
@@ -1095,6 +1142,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(25, 25, 5, 40, 15, 30, 25, 30),
 		cap		: new Stat(0, -1, 0, 3, -1, 0, -1, 0),
+		route	: "Birthright",
 	},
 
 	fuuga : {
@@ -1105,6 +1153,7 @@ var CharacterSet = {
 		},
 		growth	: new Stat(20, 20, 0, 15, 5, 20, 10, 10),
 		cap		: new Stat(0, 2, -1, 1, 0, -1, 2, -2),
+		route	: "Revelation",
 	},
 
 	anna : {
@@ -1115,5 +1164,6 @@ var CharacterSet = {
 		},
 		growth	: new Stat(35, 30, 55, 30, 40, 70, 20, 45),
 		cap		: new Stat(0, -1, 1, 0, -1, 2, -2, 2),
+		route	: "Others",
 	},
 }

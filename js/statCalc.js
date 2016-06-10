@@ -4,6 +4,7 @@
 const LEVEL_CAP_STANDARD = 20;
 const LEVEL_CAP_SPECIAL = 40;
 const SPECIAL_LEVEL_MODIFIER = 20;
+const PROMOTED_NOT_RPOMOTED_EXTRA_CAP = 20;
 const LEVEL_PROMOTION = 10;
 const FIX = 10000;	// Hack-ish fix for floating point operation
 
@@ -50,8 +51,8 @@ LevelAttribute.prototype.increaseLevel = function(prev) {
 	this.calculateDisplayedLevel();
 }
 
-LevelAttribute.prototype.isAtCap = function(extraCap) {
-	return ((this.tier1Level == LEVEL_CAP_STANDARD && this.tier2Level == 0 && this.unitClass.tier != "special") || this.tier2Level == (LEVEL_CAP_STANDARD + extraCap))
+LevelAttribute.prototype.isAtCap = function(extraCap, specialExtraCap) {
+	return ((this.tier1Level == LEVEL_CAP_STANDARD && this.tier2Level == 0 && this.unitClass.tier != "special") || this.tier2Level == (LEVEL_CAP_STANDARD + extraCap + specialExtraCap))
 }
 
 LevelAttribute.prototype.calculateDisplayedLevel = function() {
@@ -80,6 +81,7 @@ var StatCalculator = function() {
 
 StatCalculator.prototype.setCharacter = function(character, base) {
 	this.character = CharacterSet[character];
+	this.specialExtraLevel = (this.character.promotedNotPromoted ? PROMOTED_NOT_RPOMOTED_EXTRA_CAP : 0);
 	this.baseSet = base;
 	this.resetClassChange();
 	return this.character;
@@ -105,15 +107,18 @@ StatCalculator.prototype.getAvailableLevelRange = function() {
 	if (latestClassChange) {
 		curClass = latestClassChange.targetClass;
 		baseLevel = (latestClassChange.promotion ? 1 : latestClassChange.level);
+		if (curClass.tier == "special")
+			baseLevel = parseInt(baseLevel) + parseInt(SPECIAL_LEVEL_MODIFIER);	// Weird bug resulting in string concat
 	}else {
 		curClass = this.character.baseClass;
 		baseLevel = this.character.base[this.baseSet].level;
 	}
 	
 	var cap = (curClass.tier == "special" ? LEVEL_CAP_SPECIAL : LEVEL_CAP_STANDARD);
+	
 	if (curClass.tier != "tier1")
-		cap += this.extraLevel;
-		
+		cap += (this.extraLevel + this.specialExtraLevel);
+	
 	var ret = [];
 	for (var i=baseLevel; i<=cap; i++)
 		ret.push(i);
@@ -185,7 +190,7 @@ StatCalculator.prototype.compute = function() {
 	var prev = startingLevel;
 	
 	// Loop until there are no more class changes and character has reached level cap
-	for (var i=0; i<this.classChanges.length || !prev.isAtCap(this.extraLevel); ) {
+	for (var i=0; i<this.classChanges.length || !prev.isAtCap(this.extraLevel, this.specialExtraLevel); ) {
 		if (this.classChanges[i] && prev.displayedLevel == this.classChanges[i].level) {
 			// Class changed, adjust the stat using class base stat
 			var newClass = this.classChanges[i].targetClass;

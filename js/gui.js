@@ -7,12 +7,25 @@ $(document).ready(function() {
 	$("#avatar-custom").hide();
 	resetPanel();
 	
+	var unitList = {};
 	for (var unit in CharacterSet) {
-		$("#unit-select").append($('<option>', {
+		if (!unitList[CharacterSet[unit].route])
+			unitList[CharacterSet[unit].route] = [];
+		unitList[CharacterSet[unit].route].push(unit);
+	}
+	
+	for (var route in unitList) {
+		var unitSelect = $("#unit-select");
+		unitSelect.append($("<option>").text("---" + route + "---").prop("disabled", true));
+		for (var i=0; i<unitList[route].length; i++)
+			unitSelect.append($("<option>").val(unitList[route][i]).text(CharacterSet[unitList[route][i]].name));
+	}
+	
+	
+		/*.append($('<option>', {
 			value 	: unit,
 			text	: CharacterSet[unit].name,
-		}))
-	}
+		}))*/
 	
 	$("#boon-select").change(function() {
 		$("option.bane").prop("disabled", false);

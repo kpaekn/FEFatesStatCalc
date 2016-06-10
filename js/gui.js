@@ -17,7 +17,7 @@ $(document).ready(function() {
 			calc.setCharacter(val);
 			updateTable();
 		}
-		populateLevelSelect();
+		resetLeveSelect();
 	});
 	
 	$("#level-change-select").change(function() {
@@ -49,32 +49,35 @@ $(document).ready(function() {
 	});
 	
 	$("#add-seal").click(function(evt) {
-		var levelSelect = $("#level-change-select");
-		var classSelect = $("#class-change-select");
-		calc.addClassChange(levelSelect.val(), classSelect.val());
+		calc.addClassChange($("#level-change-select").val(), $("#class-change-select").val());
 		updateTable();
-		classSelect.prop("disabled", true).empty().append($("<option/>").text("Select a class"));
-		populateLevelSelect();
+		resetLeveSelect();
 	});
 	
-	function populateLevelSelect() {
+	function resetLeveSelect() {
+		$("#class-change-select").prop("disabled", true).empty().append($("<option/>").text("Select a class"));
 		var selectLevel = $("#level-change-select").prop("disabled", false).empty();
-		var levelRange = calc.getAvailableLevelRange();
-		for (var i=0; i<levelRange.length; i++)
-			selectLevel.append($("<option>").text(levelRange[i]));
+		selectLevel.append($("<option>").text("Select a level").prop("disabled", true));
+		if ($("#unit-select").val() != "none") {
+			var levelRange = calc.getAvailableLevelRange();
+			for (var i=0; i<levelRange.length; i++)
+				selectLevel.append($("<option>").text(levelRange[i]));
+		}
 	}
 	
 	$("#reset").click(function(evt) {
 		$("#unit-select").val("none");
 		$("#table-div").empty();
 		calc.resetClassChange();
+		calc.setCharacter("none");
+		resetLeveSelect();
 	});
 	
 	function updateTable() {
 		var levelList = calc.compute();
 		$("#table-div").empty();
 		
-		var table = $("<table/>");
+		var table = $("<table/>").addClass("table table-striped table-hover");
 
 		// Headings
 		var headerRow = $("<tr/>");

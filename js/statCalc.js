@@ -80,6 +80,7 @@ var StatCalculator = function() {
 
 StatCalculator.prototype.setCharacter = function(character) {
 	this.character = CharacterSet[character];
+	this.resetClassChange();
 	return this.character;
 }
 

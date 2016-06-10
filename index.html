@@ -5,10 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <title>Fire Emblem Fates: Character Average Stats</title>
 	</head>
 	
 	<body>
+		<div id="page-all" style="margin: 10px 10px 10px 10px">
 		<p>
 			<h4>Unit Selection</h4>
 			<select id="unit-select"><option value="none" disabled>Select a unit</option></select>
@@ -24,8 +28,9 @@
 		
 		<div id="class-change-list"></div>
 		<div id="table-div"></div>
+		</div>
 	
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	
 	<script>document.write('<script src="js/model.js?dev=' + Math.floor(Math.random() * 100) + '"\><\/script>');</script>
 	<script>document.write('<script src="js/statCalc.js?dev=' + Math.floor(Math.random() * 100) + '"\><\/script>');</script>
 	<script>document.write('<script src="js/gui.js?dev=' + Math.floor(Math.random() * 100) + '"\><\/script>');</script>

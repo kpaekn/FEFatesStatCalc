@@ -77,7 +77,7 @@ $(document).ready(function() {
 		var levelList = calc.compute();
 		$("#table-div").empty();
 		
-		var table = $("<table/>").addClass("table table-striped table-hover");
+		var table = $("<table/>").addClass("table table-striped table-hover table-condensed").attr("style", "width: 50%");
 
 		// Headings
 		var headerRow = $("<tr/>");

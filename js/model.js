@@ -15,10 +15,36 @@ var BaseStat = function(level, HP, Str, Mag, Skl, Spd, Lck, Def, Res) {
 }
 
 var ClassSet = {
+	
+	samurai : {
+		name	: "Samurai",
+		tier	: "tier1",
+		promoteTo : [ "swordSaint", "weaponMaster" ],
+		base	: new Stat(17, 4, 0, 5, 8, 3, 3, 3),
+		growth	: new Stat(10, 10, 0, 15, 20, 15, 0, 10),
+		maxStat	: new Stat(40, 20, 16, 23, 25, 24, 18, 20),
+	},
+	
+	swordSaint : {
+		name	: "Swordmaster",
+		tier	: "tier2",
+		base	: new Stat(18, 6, 2, 7, 11, 4, 5, 5),
+		growth	: new Stat(10, 10, 5, 15, 20, 15, 0, 10),
+		maxStat	: new Stat(55, 30, 28, 32, 35, 33, 27, 31),
+	},
+	
+	weaponMaster : {
+		name	: "Master of Arms",
+		tier	: "tier2",
+		base	: new Stat(20, 8, 0, 6, 9, 3, 7, 3),
+		growth	: new Stat(20, 15, 0, 10, 10, 10, 10, 0),
+		maxStat	: new Stat(65, 33, 25, 30, 30, 31, 31, 28),
+	},
+	
 	ninja : {
 		name 	: "Ninja",
 		tier	: "tier1",
-		promoteTo : [ "jounin" ],
+		promoteTo : [ "jounin", "mechanist" ],
 		base 	: new Stat(16, 3, 0, 8, 8, 1, 3, 3),
 		growth 	: new Stat(5, 5, 0, 20, 20, 0, 5, 15),
 		maxStat : new Stat(35, 17, 15, 25, 25, 18, 19, 20),
@@ -30,6 +56,14 @@ var ClassSet = {
 		base 	: new Stat(17, 5, 0, 10, 11, 2, 4, 8),
 		growth 	: new Stat(5, 5, 0, 20, 20, 0, 5, 20),
 		maxStat : new Stat(55, 27, 25, 35, 35, 28, 26, 34),
+	},
+	
+	mechanist : {
+		name	: "Mechanist",
+		tier	: "tier2",
+		base	: new Stat(18, 7, 0, 9, 7, 2, 6, 6),
+		growth	: new Stat(10, 10, 0, 15, 10, 5, 5, 15),
+		maxStat	: new Stat(60, 30, 25, 33, 30, 30, 31, 31),
 	},
 	
 	singer : {

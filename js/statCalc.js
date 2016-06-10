@@ -5,6 +5,7 @@ const LEVEL_CAP_STANDARD = 20;
 const LEVEL_CAP_SPECIAL = 40;
 const SPECIAL_LEVEL_MODIFIER = 20;
 const LEVEL_PROMOTION = 10;
+const FIX = 1000;	// Hack-ish fix for floating point operation
 
 /*
  *	LevelAttribute
@@ -189,7 +190,7 @@ StatCalculator.prototype.compute = function() {
 			thisLevel.increaseLevel(prev);
 			
 			for (var attr in newClass.base) {
-				thisLevel.stat[attr] = prev.stat[attr] + newClass.base[attr] - oldClass.base[attr];
+				thisLevel.stat[attr] = (prev.stat[attr]*FIX + newClass.base[attr]*FIX - oldClass.base[attr]*FIX)/FIX;
 			}
 			averageStats[++i] = [];
 		}else {
@@ -201,7 +202,7 @@ StatCalculator.prototype.compute = function() {
 				var growth = (this.character.growth[attr] + prev.unitClass.growth[attr]);
 				// Does not grow if stat is at cap
 				// The extra multiplication eliminates javascript floating point precision problem
-				thisLevel.stat[attr] = Math.min((prev.stat[attr]*1000 + growth*10)/1000, prev.unitClass.maxStat[attr]);	
+				thisLevel.stat[attr] = Math.min((prev.stat[attr]*FIX + growth*FIX/100)/FIX, prev.unitClass.maxStat[attr]);	
 			}
 		}
 		prev = thisLevel;

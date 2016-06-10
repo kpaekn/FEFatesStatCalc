@@ -20,13 +20,6 @@ $(document).ready(function() {
 		populateLevelSelect();
 	});
 	
-	function populateLevelSelect() {
-		var selectLevel = $("#level-change-select").prop("disabled", false).empty();
-		var levelRange = calc.getAvailableLevelRange();
-		for (var i=0; i<levelRange.length; i++)
-			selectLevel.append($("<option>").text(levelRange[i]));
-	}
-	
 	$("#level-change-select").change(function() {
 		var classSelect = $("#class-change-select").prop("disabled", false).empty();
 		var classSet = calc.getAvaiableClassChange(this.value);
@@ -60,10 +53,16 @@ $(document).ready(function() {
 		var classSelect = $("#class-change-select");
 		calc.addClassChange(levelSelect.val(), classSelect.val());
 		updateTable();
-		console.log("adding: " + levelSelect.val() + " and " + classSelect.val());
-		classSelect.prop("disabled", true).empty();
+		classSelect.prop("disabled", true).empty().append($("<option/>").text("Select a class"));
 		populateLevelSelect();
 	});
+	
+	function populateLevelSelect() {
+		var selectLevel = $("#level-change-select").prop("disabled", false).empty();
+		var levelRange = calc.getAvailableLevelRange();
+		for (var i=0; i<levelRange.length; i++)
+			selectLevel.append($("<option>").text(levelRange[i]));
+	}
 	
 	$("#reset").click(function(evt) {
 		$("#unit-select").val("none");
@@ -74,14 +73,19 @@ $(document).ready(function() {
 	function updateTable() {
 		var levelList = calc.compute();
 		$("#table-div").empty();
+		
+		var table = $("<table/>");
+
+		// Headings
+		var headerRow = $("<tr/>");
+		headerRow.append($("<th/>").text("Level"));
+		for (var attr in levelList[0][0].stat)
+			headerRow.append($("<th/>").text(attr));
+		table.append(headerRow);
+		
 		for (var i=0; i<levelList.length; i++) {
-			var header = $("<h4/>").text(levelList[i][0].unitClass.name);
-			var table = $("<table/>");
-			
-			// Headings
-			table.append($("<th/>").text("Level"));
-			for (var attr in levelList[i][0].stat)
-				table.append($("<th/>").text(attr));
+			var header = $("<tr/>").append($("<th/>").text(levelList[i][0].unitClass.name).attr("colspan", 9));
+			table.append(header);
 			
 			// Data
 			for (var j=0; j<levelList[i].length; j++) {
@@ -100,13 +104,16 @@ $(document).ready(function() {
 				table.append(row);
 			}
 			// Cap
-			table.append($("<th/>").text("Cap"));
+			var capRow = $("<tr/>");
+			capRow.append($("<th/>").text("Cap"));
 			for (var attr in levelList[i][0].unitClass.maxStat)
-				table.append($("<th/>").text(levelList[i][0].unitClass.maxStat[attr]));
+				capRow.append($("<th/>").text(levelList[i][0].unitClass.maxStat[attr]));
+			table.append(capRow);
 			
-			$("#table-div").append(header);
-			$("#table-div").append(table);
 		}
+		
+		//$("#table-div").append(header);
+		$("#table-div").append(table);
 	}
 });
 

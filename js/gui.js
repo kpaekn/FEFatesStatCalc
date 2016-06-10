@@ -21,12 +21,6 @@ $(document).ready(function() {
 			unitSelect.append($("<option>").val(unitList[route][i]).text(CharacterSet[unitList[route][i]].name));
 	}
 	
-	
-		/*.append($('<option>', {
-			value 	: unit,
-			text	: CharacterSet[unit].name,
-		}))*/
-	
 	$("#boon-select").change(function() {
 		$("option.bane").prop("disabled", false);
 		$("select option.bane[value=" + this.value + "]").prop("disabled", true);
@@ -80,7 +74,10 @@ $(document).ready(function() {
 	}
 	
 	$("#base-select").change(function() {
+		$("#reset").attr("disabled", true);
 		calc.baseSet = this.value;
+		calc.resetClassChange();
+		resetLeveSelect();
 		updateTable();
 	});
 	
@@ -125,8 +122,8 @@ $(document).ready(function() {
 		$("#add-seal").attr("disabled", true);
 		$("#reset").attr("disabled", false);
 		calc.addClassChange($("#level-change-select").val(), $("#class-change-select").val());
-		updateTable();
 		resetLeveSelect();
+		updateTable();
 	});
 	
 	$("#reset").click(function(evt) {

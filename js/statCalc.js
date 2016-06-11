@@ -130,7 +130,19 @@ StatCalculator.prototype.getAvaiableClassChange = function(level) {
 	var latestClassChange = this.getLatestClassChange();
 	var curClass = (latestClassChange ? latestClassChange.targetClass : this.character.baseClass);
 	
-	var ret = {};	
+	var altClass = [];
+	for (var i=0; i<this.character.altClass.length; i++) {
+		var newAltClass = this.character.altClass[i];
+		altClass.push(newAltClass);
+		for (var j=0; ClassSet[newAltClass].promoteTo && j<ClassSet[newAltClass].promoteTo.length; j++) {
+			altClass.push(ClassSet[newAltClass].promoteTo[j]);
+		}
+	}
+	
+	var ret = {};
+	ret.heartSeal = {};
+	ret.parallelSeal = {};
+	ret.specialSeal = {};
 	if (curClass.tier == "tier1" ) {
 		if (level >= LEVEL_PROMOTION) {
 			ret.masterSeal = {};
@@ -138,25 +150,26 @@ StatCalculator.prototype.getAvaiableClassChange = function(level) {
 				ret.masterSeal[curClass.promoteTo[i]] = ClassSet[curClass.promoteTo[i]];
 		}
 		
-		ret.heartSeal = {};
-		ret.specialSeal = {};
-		filterClassByTier(curClass, ret.heartSeal, "tier1");
+		filterClassByTier(curClass, ret.parallelSeal, "tier1");
 		filterClassByTier(curClass, ret.specialSeal, "special");
-				
+		populateAltClassSet(curClass, altClass, "tier2", ret.heartSeal, [ ret.parallelSeal, ret.specialSeal ]);
+	
 	}else if (curClass.tier == "tier2") {
-		ret.heartSeal = {};
-		ret.specialSeal = {};
-		filterClassByTier(curClass, ret.heartSeal, "tier2");
+		filterClassByTier(curClass, ret.parallelSeal, "tier2");
 		filterClassByTier(curClass, ret.specialSeal, "special");
+		populateAltClassSet(curClass, altClass, "tier1", ret.heartSeal, [ ret.parallelSeal, ret.specialSeal ]);
 	
 	}else if (curClass.tier == "special") {
-		ret.heartSeal = {};
-		ret.specialSeal = {};
 		if (level <= LEVEL_CAP_STANDARD)
-			filterClassByTier(curClass, ret.heartSeal, "tier1");
+			filterClassByTier(curClass, ret.parallelSeal, "tier1");
 		else
-			filterClassByTier(curClass, ret.heartSeal, "tier2");
+			filterClassByTier(curClass, ret.parallelSeal, "tier2");
 		filterClassByTier(curClass, ret.specialSeal, "special");
+		
+		if (level <= LEVEL_CAP_STANDARD)
+			populateAltClassSet(curClass, altClass, "tier2", ret.heartSeal, [ ret.parallelSeal, ret.specialSeal ]);
+		else
+			populateAltClassSet(curClass, altClass, "tier1", ret.heartSeal, [ ret.parallelSeal, ret.specialSeal ]);
 	}
 	
 	return ret;
@@ -166,6 +179,17 @@ function filterClassByTier(currentClass, set, tier) {
 	for (var parClass in ClassSet)
 		if (ClassSet[parClass].tier == tier && ClassSet[parClass] != currentClass)
 			set[parClass] = ClassSet[parClass];
+}
+
+function populateAltClassSet(currentClass, altClassList, tierException, heartSet, otherSetList) {
+	for (var i=0; i<altClassList.length; i++) {
+		var altClass = altClassList[i];
+		if (ClassSet[altClass].tier != tierException && ClassSet[altClass] != currentClass) {
+			heartSet[altClass] = ClassSet[altClass];
+			for (var j=0; j<otherSetList; j++)
+				delete otherSetList[j][altClass];
+		}
+	}
 }
 
 // Return latest class change, or undefined

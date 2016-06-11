@@ -95,7 +95,7 @@ $(document).ready(function() {
 		var classSet = calc.getAvaiableClassChange(this.value);
 		
 		if (classSet.masterSeal) {
-			classSelect.append($("<option/>").text("---Master Seal---").prop("disabled", true));
+			classSelect.append($("<option/>").text("-----Master Seal-----").prop("disabled", true));
 			for (var c in classSet.masterSeal)
 				classSelect.append($("<option/>", {
 					text	: ClassSet[c].name,
@@ -103,14 +103,21 @@ $(document).ready(function() {
 				}))
 		}
 		
-		classSelect.append($("<option/>").text("---Heart Seal---").prop("disabled", true));
+		classSelect.append($("<option/>").text("-----Heart Seal-----").prop("disabled", true));
 			for (var c in classSet.heartSeal)
 				classSelect.append($("<option/>", {
 					text	: ClassSet[c].name,
 					value	: c,
 				}))
 				
-		classSelect.append($("<option/>").text("---Special Seal---").prop("disabled", true));
+		classSelect.append($("<option/>").text("---Friendship/Partner Seal---").prop("disabled", true));
+			for (var c in classSet.parallelSeal)
+				classSelect.append($("<option/>", {
+					text	: ClassSet[c].name,
+					value	: c,
+				}))
+				
+		classSelect.append($("<option/>").text("-----Special Seal-----").prop("disabled", true));
 			for (var c in classSet.specialSeal)
 				classSelect.append($("<option/>", {
 					text	: ClassSet[c].name,

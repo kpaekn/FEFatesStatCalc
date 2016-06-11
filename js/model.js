@@ -549,6 +549,7 @@ var CharacterSet = {
 	kamui : {
 		name	: "Corrin",
 		baseClass : ClassSet.nohrPrince,
+		altClass  : [],
 		base	: {
 			Standard : {}
 		},
@@ -629,6 +630,7 @@ var CharacterSet = {
 	azura : {
 		name	: "Azura",
 		baseClass : ClassSet.singer,
+		altClass  : [ "singer", "pegKnight" ],
 		base 	: {
 			Standard : new BaseStat(1, 16, 5, 2, 8, 8, 6, 4, 7),
 		},
@@ -640,6 +642,7 @@ var CharacterSet = {
 	kaze : {
 		name	: "Kaze",
 		baseClass : ClassSet.ninja,
+		altClass  : [ "ninja", "samurai" ],
 		base: {
 			Standard : new BaseStat(3, 19, 7, 0, 9, 12, 4, 5, 10),
 			Conquest : new BaseStat(9, 22, 9, 0, 12, 16, 6, 7, 13),
@@ -652,6 +655,7 @@ var CharacterSet = {
 	gunter : {
 		name	: "Gunter",
 		baseClass : ClassSet.greatKnight,
+		altClass  : [ "cavalier", "mercenary", "wyvernRider" ],
 		base	: {
 			Standard : new BaseStat(3, 24, 10, 0, 15, 8, 9, 10, 4),
 			Conquest : new BaseStat(10, 34, 17, 0, 24, 10, 13, 20, 6),
@@ -664,6 +668,7 @@ var CharacterSet = {
 	felicia : {
 		name	: "Felicia",
 		baseClass : ClassSet.maid,
+		altClass  : [ "troubadour", "mercenary" ],
 		base	: {
 			"First Joining" : new BaseStat(1, 19, 5, 9, 10, 10, 12, 5, 9),
 			"Second Joining" : new BaseStat(13, 24, 7, 14, 15, 17, 20, 7, 14),
@@ -677,6 +682,7 @@ var CharacterSet = {
 	jakob : {
 		name	: "Jakob",
 		baseClass : ClassSet.maid,
+		altClass  : [ "troubadour", "cavalier" ],
 		base	: {
 			"First Joining" : new BaseStat(1, 21, 8, 6, 12, 9, 10, 7, 6),
 			"Second Joining" : new BaseStat(13, 27, 13, 9, 19, 15, 17, 11, 10),
@@ -690,6 +696,7 @@ var CharacterSet = {
 	silas : {
 		name	: "Silas",
 		baseClass : ClassSet.cavalier,
+		altClass  : [ "cavalier", "mercenary" ],
 		base	: {
 			Standard : new BaseStat(6, 22, 11, 0, 9, 8, 7, 10, 5),
 		},
@@ -701,6 +708,7 @@ var CharacterSet = {
 	mozume : {
 		name	: "Mozu",
 		baseClass : ClassSet.villager,
+		altClass  : [ "villager", "archer" ],
 		base	: {
 			Standard : new BaseStat(1, 16, 6, 0, 5, 7, 3, 4, 1),
 		},
@@ -712,6 +720,7 @@ var CharacterSet = {
 	rinkah : {
 		name	: "Rinkah",
 		baseClass : ClassSet.oni,
+		altClass  : [ "oni", "ninja" ],
 		base	: {
 			Standard : new BaseStat(4, 20, 8, 2, 6, 8, 5, 10, 3),
 		},
@@ -723,6 +732,7 @@ var CharacterSet = {
 	sakura : {
 		name	: "Sakura",
 		baseClass : ClassSet.miko,
+		altClass  : [ "miko", "pegKnight" ],
 		base	: {
 			Standard : new BaseStat(1, 16, 3, 6, 5, 7, 9, 5, 7),
 			Revelation : new BaseStat(4, 19, 4, 8, 6, 10, 11, 7, 8),
@@ -735,6 +745,7 @@ var CharacterSet = {
 	hana : {
 		name	: "Hana",
 		baseClass : ClassSet.samurai,
+		altClass  : [ "samurai", "miko" ],
 		base	: {
 			Standard : new BaseStat(4, 20, 9, 0, 11, 11, 5, 6, 9),
 			Revelation : new BaseStat(4, 20, 7, 0, 9, 11, 5, 6, 9),
@@ -747,6 +758,7 @@ var CharacterSet = {
 	tsubaki : {
 		name	: "Subaki",
 		baseClass : ClassSet.pegKnight,
+		altClass  : [ "pegKnight", "samurai" ],
 		base	: {
 			Standard : new BaseStat(5, 22, 8, 0, 13, 10, 7, 9, 10),
 		},
@@ -758,6 +770,7 @@ var CharacterSet = {
 	saizou : {
 		name	: "Saizo",
 		baseClass : ClassSet.ninja,
+		altClass  : [ "ninja", "samurai" ],
 		base	: {
 			Standard : new BaseStat(7, 23, 11, 3, 14, 11, 9, 9, 7),
 			Revelation : new BaseStat(9, 23, 11, 3, 15, 12, 9, 9, 8),
@@ -770,6 +783,7 @@ var CharacterSet = {
 	orochi : {
 		name	: "Orochi",
 		baseClass : ClassSet.diviner,
+		altClass  : [ "diviner", "apoth" ],
 		base	: {
 			Standard : new BaseStat(5, 20, 0, 9, 11, 7, 6, 5, 10),
 			Revelation : new BaseStat(7, 20, 1, 10, 12, 7, 6, 5, 10),
@@ -782,6 +796,7 @@ var CharacterSet = {
 	hinoka : {
 		name	: "Hinoka",
 		baseClass : ClassSet.pegKnight,
+		altClass  : [ "pegKnight", "lancer" ],
 		base	: {
 			Standard : new BaseStat(8, 23, 9, 4, 13, 16, 12, 9, 15),
 			Revelation : new BaseStat(17, 24, 14, 5, 18, 23, 16, 12, 23),
@@ -794,6 +809,7 @@ var CharacterSet = {
 	azama : {
 		name	: "Azama",
 		baseClass : ClassSet.monk,
+		altClass  : [ "monk", "apoth" ],
 		base	: {
 			Standard : new BaseStat(7, 24, 9, 7, 9, 10, 12, 10, 8),
 			Revelation : new BaseStat(13, 28, 10, 8, 11, 13, 16, 14, 10),
@@ -806,6 +822,7 @@ var CharacterSet = {
 	setsuna : {
 		name	: "Setsuna",
 		baseClass : ClassSet.archer,
+		altClass  : [ "archer", "ninja" ],
 		base	: {
 			Standard : new BaseStat(3, 19, 8, 0, 9, 10, 6, 5, 3),
 			Revelation : new BaseStat(11, 25, 12, 0, 15, 17, 11, 8, 10),
@@ -818,6 +835,7 @@ var CharacterSet = {
 	hayato : {
 		name	: "Hayato",
 		baseClass : ClassSet.diviner,
+		altClass  : [ "diviner", "oni" ],
 		base	: {
 			Standard : new BaseStat(1, 16, 1, 4, 5, 7, 8, 4, 5),
 			Revelation : new BaseStat(9, 22, 2, 9, 9, 13, 11, 5, 7),
@@ -830,6 +848,7 @@ var CharacterSet = {
 	oboro : {
 		name	: "Oboro",
 		baseClass : ClassSet.lancer,
+		altClass  : [ "lancer", "apoth" ],
 		base	: {
 			Standard : new BaseStat(10, 25, 13, 0, 11, 12, 11, 13, 8),
 		},
@@ -841,6 +860,7 @@ var CharacterSet = {
 	hinata : {
 		name	: "Hinata",
 		baseClass : ClassSet.samurai,
+		altClass  : [ "samurai", "oni" ],
 		base	: {
 			Standard : new BaseStat(10, 26, 11, 0, 9, 14, 10, 12, 4),
 		},
@@ -852,6 +872,7 @@ var CharacterSet = {
 	takumi : {
 		name	: "Takumi",
 		baseClass : ClassSet.archer,
+		altClass  : [ "archer", "lancer" ],
 		base	: {
 			Standard : new BaseStat(11, 26, 13, 0, 17, 11, 13, 10, 4),
 		},
@@ -863,6 +884,7 @@ var CharacterSet = {
 	kagero : {
 		name	: "Kagero",
 		baseClass : ClassSet.ninja,
+		altClass  : [ "ninja", "diviner" ],
 		base	: {
 			Standard : new BaseStat(10, 22, 15, 0, 10, 12, 7, 9, 10),
 		},
@@ -874,6 +896,7 @@ var CharacterSet = {
 	kaden : {
 		name	: "Kaden",
 		baseClass : ClassSet.kitsune,
+		altClass  : [ "kitsune", "diviner" ],
 		base	: {
 			Standard : new BaseStat(14, 30, 15, 1, 12, 19, 14, 9, 14),
 		},
@@ -885,6 +908,7 @@ var CharacterSet = {
 	ryoma : {
 		name	: "Ryoma",
 		baseClass : ClassSet.swordSaint,
+		altClass  : [ "samurai", "pegKnight" ],
 		base	: {
 			Standard : new BaseStat(4, 36, 20, 2, 18, 24, 20, 16, 13),
 		},
@@ -896,6 +920,7 @@ var CharacterSet = {
 	elise : {
 		name	: "Elise",
 		baseClass : ClassSet.troubadour,
+		altClass  : [ "troubadour", "wyvernRider" ],
 		base	: {
 			Standard : new BaseStat(5, 19, 2, 11, 5, 10, 14, 4, 11),
 			Revelation : new BaseStat(7, 20, 2, 13, 7, 11, 16, 4, 13),
@@ -908,6 +933,7 @@ var CharacterSet = {
 	effie : {
 		name	: "Effie",
 		baseClass : ClassSet.knight,
+		altClass  : [ "knight", "troubadour" ],
 		base	: {
 			Standard : new BaseStat(6, 23, 13, 0, 8, 5, 10, 12, 4),
 			Revelation : new BaseStat(8, 24, 14, 0, 9, 5, 11, 13, 4),
@@ -920,6 +946,7 @@ var CharacterSet = {
 	arthur : {
 		name	: "Arthur",
 		baseClass : ClassSet.fighter,
+		altClass  : [ "fighter", "cavalier" ],
 		base	: {
 			Standard : new BaseStat(7, 24, 12, 0, 9, 8, 1, 9, 4),
 			Revelation : new BaseStat(9, 26, 13, 0, 10, 9, 1, 9, 4),
@@ -932,6 +959,7 @@ var CharacterSet = {
 	odin : {
 		name	: "Odin",
 		baseClass : ClassSet.mage,
+		altClass  : [ "mage", "samurai" ],
 		base	: {
 			Standard : new BaseStat(5, 21, 5, 8, 10, 7, 9, 6, 7),
 			Revelation : new BaseStat(12, 24, 8, 12, 12, 10, 12, 7, 10),
@@ -944,6 +972,7 @@ var CharacterSet = {
 	niles : {
 		name	: "Niles",
 		baseClass : ClassSet.outlaw,
+		altClass  : [ "outlaw", "mage" ],
 		base	: {
 			Standard : new BaseStat(8, 22, 9, 5, 9, 15, 6, 7, 12),
 			Revelation : new BaseStat(14, 24, 11, 6, 11, 17, 7, 10, 16),
@@ -956,6 +985,7 @@ var CharacterSet = {
 	nyx : {
 		name	: "Nyx",
 		baseClass : ClassSet.mage,
+		altClass  : [ "mage", "outlaw" ],
 		base	: {
 			Standard : new BaseStat(9, 20, 1, 12, 5, 11, 3, 4, 8),
 		},
@@ -966,7 +996,8 @@ var CharacterSet = {
 
 	camilla : {
 		name	: "Camilla",
-		baseClass : ClassSet.revenant_knight,
+		baseClass : ClassSet.maligKnight,
+		altClass  : [ "wyvernRider", "mage" ],
 		base	: {
 			Standard : new BaseStat(1, 30, 19, 11, 15, 19, 12, 18, 15),
 		},
@@ -978,6 +1009,7 @@ var CharacterSet = {
 	selena : {
 		name	: "Selena",
 		baseClass : ClassSet.mercenary,
+		altClass  : [ "mercenary", "pegKnight" ],
 		base	: {
 			Standard : new BaseStat(10, 24, 12, 3, 12, 15, 9, 11, 8),
 		},
@@ -989,6 +1021,7 @@ var CharacterSet = {
 	beruka : {
 		name	: "Beruka",
 		baseClass : ClassSet.wyvernRider,
+		altClass  : [ "wyvernRider", "fighter" ],
 		base	: {
 			Standard : new BaseStat(9, 23, 13, 0, 14, 9, 10, 14, 7),
 		},
@@ -1000,6 +1033,7 @@ var CharacterSet = {
 	laslow : {
 		name	: "Laslow",
 		baseClass : ClassSet.mercenary,
+		altClass  : [ "mercenary", "ninja" ],
 		base	: {
 			Standard : new BaseStat(12, 28, 15, 0, 16, 13, 14, 10, 7),
 			Revelation : new BaseStat(16, 30, 17, 0, 19, 16, 16, 12, 8),
@@ -1012,6 +1046,7 @@ var CharacterSet = {
 	peri : {
 		name	: "Peri",
 		baseClass : ClassSet.cavalier,
+		altClass  : [ "cavalier", "mage" ],
 		base	: {
 			Standard : new BaseStat(10, 25, 13, 0, 9, 13, 9, 10, 10),
 			Revelation : new BaseStat(16, 27, 16, 0, 10, 15, 12, 12, 11),
@@ -1024,6 +1059,7 @@ var CharacterSet = {
 	charlotte : {
 		name	: "Charlotte",
 		baseClass : ClassSet.fighter,
+		altClass  : [ "fighter", "troubadour" ],
 		base	: {
 			Standard : new BaseStat(10, 28, 15, 0, 10, 13, 9, 8, 2),
 		},
@@ -1035,6 +1071,7 @@ var CharacterSet = {
 	benny : {
 		name	: "Benny",
 		baseClass : ClassSet.knight,
+		altClass  : [ "knight", "fighter" ],
 		base	: {
 			Standard : new BaseStat(15, 31, 15, 0, 15, 6, 12, 19, 10),
 		},
@@ -1046,6 +1083,7 @@ var CharacterSet = {
 	leo : {
 		name	: "Leo",
 		baseClass : ClassSet.darkKnight,
+		altClass  : [ "mage", "troubadour" ],
 		base	: {
 			Standard : new BaseStat(2, 34, 14, 20, 14, 15, 15, 16, 20),
 		},
@@ -1057,6 +1095,7 @@ var CharacterSet = {
 	keaton : {
 		name	: "Keaton",
 		baseClass : ClassSet.wolfskin,
+		altClass  : [ "wolfskin", "fighter" ],
 		base	: {
 			Standard : new BaseStat(15, 35, 19, 0, 10, 13, 9, 16, 7),
 		},
@@ -1068,6 +1107,7 @@ var CharacterSet = {
 	xander : {
 		name	: "Xander",
 		baseClass : ClassSet.paladin,
+		altClass  : [ "cavalier", "wyvernRider" ],
 		base	: {
 			Standard : new BaseStat(4, 38, 23, 4, 18, 15, 20, 23, 11),
 		},
@@ -1079,6 +1119,7 @@ var CharacterSet = {
 	reina : {
 		name	: "Reina",
 		baseClass : ClassSet.kinshiKnight,
+		altClass  : [ "pegKnight", "diviner", "ninja" ],
 		base	: {
 			Standard : new BaseStat(1, 28, 17, 5, 14, 20, 14, 10, 13),
 			Revelation : new BaseStat(1, 28, 18, 4, 16, 21, 15, 10, 13),
@@ -1091,6 +1132,7 @@ var CharacterSet = {
 	scarlet : {
 		name	: "Scarlet",
 		baseClass : ClassSet.wyvernLord,
+		altClass  : [ "wyvernRider", "outlaw", "knight" ],
 		base	: {
 			Standard : new BaseStat(1, 30, 23, 4, 17, 19, 14, 22, 6),
 			Revelation : new BaseStat(3, 32, 22, 4, 18, 19, 14, 23, 7),
@@ -1103,6 +1145,7 @@ var CharacterSet = {
 	flora : {
 		name	: "Flora",
 		baseClass : ClassSet.maid,
+		altClass  : [ "troubadour", "mage", "mercenary" ],
 		base	: {
 			Standard : new BaseStat(5, 29, 18, 16, 25, 15, 11, 14, 23),
 		},
@@ -1114,6 +1157,7 @@ var CharacterSet = {
 	shura : {
 		name	: "Shura",
 		baseClass : ClassSet.adventurer,
+		altClass  : [ "outlaw", "ninja", "fighter" ],
 		base	: {
 			Standard : new BaseStat(10, 34, 20, 11, 23, 27, 15, 14, 24),
 			Conquest : new BaseStat(2, 31, 18, 10, 21, 24, 13, 13, 21),
@@ -1126,6 +1170,7 @@ var CharacterSet = {
 	izana : {
 		name	: "Izana",
 		baseClass : ClassSet.exorcist,
+		altClass  : [ "monk", "samurai", "apoth" ],
 		base	: {
 			Standard : new BaseStat(5, 31, 8, 23, 25, 18, 17, 14, 24),
 		},
@@ -1137,6 +1182,7 @@ var CharacterSet = {
 	yukimura : {
 		name	: "Yukimura",
 		baseClass : ClassSet.mechanist,
+		altClass  : [ "apoth", "samurai", "monk" ],
 		base	: {
 			Standard : new BaseStat(10, 38, 25, 3, 29, 23, 18, 21, 22),
 		},
@@ -1148,6 +1194,7 @@ var CharacterSet = {
 	fuuga : {
 		name	: "Fuga",
 		baseClass : ClassSet.weaponMaster,
+		altClass  : [ "samurai", "oni", "monk" ],
 		base	: {
 			Standard : new BaseStat(10, 41, 29, 0, 27, 25, 18, 29, 15),
 		},
@@ -1159,6 +1206,7 @@ var CharacterSet = {
 	anna : {
 		name	: "Anna",
 		baseClass : ClassSet.outlaw,
+		altClass  : [ "outlaw", "troubadour", "apoth" ],
 		base	: {
 			Standard : new BaseStat(10, 23, 9, 11, 10, 14, 15, 6, 15),
 		},

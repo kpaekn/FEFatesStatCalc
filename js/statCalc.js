@@ -64,10 +64,12 @@ LevelAttribute.prototype.calculateDisplayedLevel = function() {
 /*
  *	ClassChange
  */
-var ClassChange = function(level, targetClass) {
+var ClassChange = function(level, sourceClass, targetClass) {
 	this.level = level;
+	this.sourceClass = sourceClass;
 	this.targetClass = targetClass;
-	this.promotion = false;
+	if (targetClass.tier == "tier2" && sourceClass.tier == "tier1")
+		this.promotion = true;
 }
 
 /*
@@ -91,9 +93,7 @@ StatCalculator.prototype.addClassChange = function(level, targetClass) {
 	var newClass = ClassSet[targetClass];
 	var latestClassChange = this.getLatestClassChange();
 	var oldClass = (latestClassChange ? latestClassChange.targetClass : this.character.baseClass);
-	var newClassChange = new ClassChange(level, newClass);
-	if (newClass.tier == "tier2" && oldClass.tier == "tier1")
-		newClassChange.promotion = true;
+	var newClassChange = new ClassChange(level, oldClass, newClass);
 	this.classChanges.push(newClassChange)
 }
 
@@ -107,8 +107,13 @@ StatCalculator.prototype.getAvailableLevelRange = function() {
 	if (latestClassChange) {
 		curClass = latestClassChange.targetClass;
 		baseLevel = (latestClassChange.promotion ? 1 : latestClassChange.level);
-		if (curClass.tier == "special")
+		
+		// base level conversion between special & tier 2
+		if (curClass.tier == "special" && latestClassChange.sourceClass.tier == "tier2")
 			baseLevel = parseInt(baseLevel) + parseInt(SPECIAL_LEVEL_MODIFIER);	// Weird bug resulting in string concat
+		if (curClass.tier == "tier2" && latestClassChange.sourceClass.tier == "special")
+			baseLevel -= SPECIAL_LEVEL_MODIFIER;
+		
 	}else {
 		curClass = this.character.baseClass;
 		baseLevel = this.character.base[this.baseSet].level;
@@ -131,8 +136,8 @@ StatCalculator.prototype.getAvaiableClassChange = function(level) {
 	var curClass = (latestClassChange ? latestClassChange.targetClass : this.character.baseClass);
 	
 	var altClass = [];
-	for (var i=0; i<this.character.altClass.length; i++) {
-		var newAltClass = this.character.altClass[i];
+	for (var i=0; i<this.character.classSet.length; i++) {
+		var newAltClass = this.character.classSet[i];
 		altClass.push(newAltClass);
 		for (var j=0; ClassSet[newAltClass].promoteTo && j<ClassSet[newAltClass].promoteTo.length; j++) {
 			altClass.push(ClassSet[newAltClass].promoteTo[j]);
@@ -150,43 +155,55 @@ StatCalculator.prototype.getAvaiableClassChange = function(level) {
 				ret.masterSeal[curClass.promoteTo[i]] = ClassSet[curClass.promoteTo[i]];
 		}
 		
-		filterClassByTier(curClass, ret.parallelSeal, "tier1");
-		filterClassByTier(curClass, ret.specialSeal, "special");
-		populateAltClassSet(curClass, altClass, "tier2", ret.heartSeal, [ ret.parallelSeal, ret.specialSeal ]);
+		this.filterClassByTier(curClass, ret.parallelSeal, "tier1");
+		this.filterClassByTier(curClass, ret.specialSeal, "special");
+		this.populateAltClassSet(curClass, altClass, "tier2", ret.heartSeal, [ ret.parallelSeal, ret.specialSeal ]);
 	
 	}else if (curClass.tier == "tier2") {
-		filterClassByTier(curClass, ret.parallelSeal, "tier2");
-		filterClassByTier(curClass, ret.specialSeal, "special");
-		populateAltClassSet(curClass, altClass, "tier1", ret.heartSeal, [ ret.parallelSeal, ret.specialSeal ]);
+		this.filterClassByTier(curClass, ret.parallelSeal, "tier2");
+		this.filterClassByTier(curClass, ret.specialSeal, "special");
+		this.populateAltClassSet(curClass, altClass, "tier1", ret.heartSeal, [ ret.parallelSeal, ret.specialSeal ]);
 	
 	}else if (curClass.tier == "special") {
 		if (level <= LEVEL_CAP_STANDARD)
-			filterClassByTier(curClass, ret.parallelSeal, "tier1");
+			this.filterClassByTier(curClass, ret.parallelSeal, "tier1");
 		else
-			filterClassByTier(curClass, ret.parallelSeal, "tier2");
-		filterClassByTier(curClass, ret.specialSeal, "special");
+			this.filterClassByTier(curClass, ret.parallelSeal, "tier2");
+		this.filterClassByTier(curClass, ret.specialSeal, "special");
 		
 		if (level <= LEVEL_CAP_STANDARD)
-			populateAltClassSet(curClass, altClass, "tier2", ret.heartSeal, [ ret.parallelSeal, ret.specialSeal ]);
+			this.populateAltClassSet(curClass, altClass, "tier2", ret.heartSeal, [ ret.parallelSeal, ret.specialSeal ]);
 		else
-			populateAltClassSet(curClass, altClass, "tier1", ret.heartSeal, [ ret.parallelSeal, ret.specialSeal ]);
+			this.populateAltClassSet(curClass, altClass, "tier1", ret.heartSeal, [ ret.parallelSeal, ret.specialSeal ]);
 	}
 	
 	return ret;
 }
 
-function filterClassByTier(currentClass, set, tier) {
-	for (var parClass in ClassSet)
-		if (ClassSet[parClass].tier == tier && ClassSet[parClass] != currentClass)
-			set[parClass] = ClassSet[parClass];
+StatCalculator.prototype.filterClassByTier = function(currentClass, set, tier) {
+	for (var parClass in ClassSet) {
+		var cl = ClassSet[parClass];
+		if (cl.tier == tier && cl != currentClass) {
+			if (cl.restriction || cl.genderLock) {
+				// Since a class is either genderlock or has character restriction, we can check the 2 conditions separately
+				for (var i=0; cl.restriction && i<cl.restriction.length; i++)
+					if (this.character == CharacterSet[cl.restriction[i]])
+						set[parClass] = ClassSet[parClass];
+				
+				if (cl.genderLock && (this.character.gender == cl.genderLock || this.character.gender == "either"))
+					set[parClass] = ClassSet[parClass];
+			}else
+				set[parClass] = ClassSet[parClass];
+		}
+	}
 }
 
-function populateAltClassSet(currentClass, altClassList, tierException, heartSet, otherSetList) {
+StatCalculator.prototype.populateAltClassSet = function(currentClass, altClassList, tierException, heartSet, otherSetList) {
 	for (var i=0; i<altClassList.length; i++) {
 		var altClass = altClassList[i];
 		if (ClassSet[altClass].tier != tierException && ClassSet[altClass] != currentClass) {
 			heartSet[altClass] = ClassSet[altClass];
-			for (var j=0; j<otherSetList; j++)
+			for (var j=0; j<otherSetList.length; j++)
 				delete otherSetList[j][altClass];
 		}
 	}

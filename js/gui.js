@@ -4,6 +4,8 @@ $(document).ready(function() {
 	
 	calc = new StatCalculator();
 	CharacterSet.kamui.initialize($("#boon-select").val(), $("#bane-select").val());
+	for (var i=1; i<=20; i++)
+		$("#extra-select").append($("<option>").val(i*5).text(i + " (+" + i*5 + " levels)"));
 	$("#avatar-custom").hide();
 	resetPanel();
 	
@@ -25,7 +27,6 @@ $(document).ready(function() {
 		$("option.bane").prop("disabled", false);
 		$("select option.bane[value=" + this.value + "]").prop("disabled", true);
 		CharacterSet.kamui.initialize($("#boon-select").val(), $("#bane-select").val());
-		calc.compute();
 		updateTable();
 	});
 	
@@ -33,7 +34,13 @@ $(document).ready(function() {
 		$("option.boon").prop("disabled", false);
 		$("select option.boon[value=" + this.value + "]").prop("disabled", true);
 		CharacterSet.kamui.initialize($("#boon-select").val(), $("#bane-select").val());
-		calc.compute();
+		updateTable();
+	});
+	
+	$("#extra-select").change(function() {
+		calc.extraLevel = parseInt(this.value);
+		calc.resetClassChange();
+		resetLeveSelect();
 		updateTable();
 	});
 	
@@ -48,8 +55,8 @@ $(document).ready(function() {
 		if (this.value != "none") {
 			var base = addBaseSelection(this.value);
 			calc.setCharacter(this.value, base);
-			updateTable();
 			resetLeveSelect();
+			updateTable();
 		}else
 			resetPanel();
 	});
@@ -136,8 +143,8 @@ $(document).ready(function() {
 	$("#reset").click(function(evt) {
 		$("#reset").attr("disabled", true);
 		calc.resetClassChange();
-		updateTable();
 		resetLeveSelect();
+		updateTable();
 	});
 	
 	function resetLeveSelect() {

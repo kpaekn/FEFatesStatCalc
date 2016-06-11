@@ -122,7 +122,7 @@ StatCalculator.prototype.getAvailableLevelRange = function() {
 	var cap = (curClass.tier == "special" ? LEVEL_CAP_SPECIAL : LEVEL_CAP_STANDARD);
 	
 	if (curClass.tier != "tier1")
-		cap += (this.extraLevel + this.specialExtraLevel);
+		cap = parseInt(cap) + parseInt(this.extraLevel) + parseInt(this.specialExtraLevel);
 	
 	var ret = [];
 	for (var i=baseLevel; i<=cap; i++)

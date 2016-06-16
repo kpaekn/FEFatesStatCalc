@@ -175,7 +175,7 @@ $(document).ready(function() {
 	
 	function toggleAptitude() {
 		var unit = $("#unit-select").val();
-		if (unit == "mozume" || db.character[unit].gen == "child" || db.character[unit].get == "avatarChild")
+		if (unit == "mozume" || db.character[unit].gen == "child" || db.character[unit].gen == "avatarChild")
 			$("#aptitude-check").show(ANIMATION_SPEED);
 		else
 			$("#aptitude-check").hide(ANIMATION_SPEED);

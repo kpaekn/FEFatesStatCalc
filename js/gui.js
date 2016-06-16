@@ -1,3 +1,5 @@
+const ANIMATION_SPEED = 100;
+
 var calc = new StatCalculator();
 
 $(document).ready(function() {
@@ -39,61 +41,71 @@ $(document).ready(function() {
 	$("#extra-select").change(function() {
 		calc.extraLevel = parseInt(this.value);
 		calc.resetClassChange();
-		resetLeveSelect();
+		updateLevelSelect();
 		updateTable();
 	});
 	
+	$("input[name=aptitude]").change(function() {
+		calc.setAptitude($("input[name=aptitude]").prop("checked"));
+		updateTable();
+	})
+	
 	$("#unit-select").change(function() {
 		$("#table-div").empty();
-		
-		if (this.value == "kamui")
-				$("#avatar-custom").show(100);
-			else
-				$("#avatar-custom").hide(100);
-					
+		toggleAvatarCustomization();
+		toggleAptitude();
 		if (this.value != "none") {
-			var base = addBaseSelection(this.value);
-			calc.setCharacter(this.value, base);
-			resetLeveSelect();
-			updateTable();
+			var base = updateBaseSelection(this.value);
+			var parentList = db.character[this.value].getParentList();
+			updateParentList(parentList);
+			if (!parentList) {
+				calc.setCharacter(this.value, base);
+				updateLevelSelect();
+				updateTable();
+			}
+			updateGrandparentList();
 		}else
 			resetPanel();
 	});
 	
-	function addBaseSelection(ch) {
-		var baseSelection = $("#base-select").empty().prop("disabled", false);
-		
-		var character = db.character[ch];
-		var baseList = [];
-		for (var key in character.base)
-			baseList.push(key);
-		
-		for (var i=0; i<baseList.length; i++) {
-			baseSelection.append($("<option/>", {
-				text	: baseList[i],
-				value	: baseList[i],
-			}))
+	$("#parent-select").change(function() {
+		$("#table-div").empty();
+		toggleAvatarCustomization();
+		if (this.value != "none") {
+			var grandparentList = db.character[this.value].getParentList();
+			updateGrandparentList(grandparentList);
+			if (!grandparentList) {
+				var unit = $("#unit-select").val();
+				var base = $("#base-select").val();
+				db.character[unit].setParent(db.character[this.value]);
+				calc.setCharacter(unit, base);
+				updateLevelSelect();
+				updateTable();
+			}
 		}
-		
-		// Assume there is at least 1 base
-		return baseList[0];
-	}
+	});
+	
+	$("#grandparent-select").change(function() {
+		$("#table-div").empty();
+		if (this.value != "none") {
+			var unit = $("#unit-select").val();
+			var parent = $("#parent-select").val();
+			var base = $("#base-select").val();
+			db.character[parent].setParent(db.character[this.value]);
+			db.character[unit].setParent(db.character[parent]);
+			calc.setCharacter(unit, base);
+			updateLevelSelect();
+			updateTable();
+		}
+	});
 	
 	$("#base-select").change(function() {
 		$("#reset").attr("disabled", true);
 		calc.baseSet = this.value;
 		calc.resetClassChange();
-		resetLeveSelect();
+		updateLevelSelect();
 		updateTable();
 	});
-	
-	function resetPanel() {
-		$("#level-change-select").prop("disabled", true).empty().append($("<option/>").text("Select a level"));
-		$("#class-change-select").prop("disabled", true).empty().append($("<option/>").text("Select a class"));
-		$("#base-select").prop("disabled", true).empty().append($("<option/>").text("Select a base"));
-		$("#add-seal").attr("disabled", true);
-		$("#reset").attr("disabled", true);
-	}
 	
 	$("#level-change-select").change(function() {
 		$("#add-seal").attr("disabled", false);
@@ -135,18 +147,82 @@ $(document).ready(function() {
 		$("#add-seal").attr("disabled", true);
 		$("#reset").attr("disabled", false);
 		calc.addClassChange($("#level-change-select").val(), $("#class-change-select").val());
-		resetLeveSelect();
+		updateLevelSelect();
 		updateTable();
 	});
 	
 	$("#reset").click(function(evt) {
 		$("#reset").attr("disabled", true);
 		calc.resetClassChange();
-		resetLeveSelect();
+		updateLevelSelect();
 		updateTable();
 	});
 	
-	function resetLeveSelect() {
+	function resetPanel() {
+		$("#level-change-select").prop("disabled", true).empty().append($("<option/>").text("Select a level"));
+		$("#class-change-select").prop("disabled", true).empty().append($("<option/>").text("Select a class"));
+		$("#base-select").prop("disabled", true).empty().append($("<option/>").text("Select a base"));
+		$("#add-seal").attr("disabled", true);
+		$("#reset").attr("disabled", true);
+	}
+	
+	function toggleAvatarCustomization() {
+		if ($("#unit-select").val() == "kamui" || $("#unit-select").val() == "kanna" || $("#parent-select").val() == "kamui")
+			$("#avatar-custom").show(ANIMATION_SPEED);
+		else
+			$("#avatar-custom").hide(ANIMATION_SPEED);
+	}
+	
+	function toggleAptitude() {
+		var unit = $("#unit-select").val();
+		if (unit == "mozume" || db.character[unit].gen == "child" || db.character[unit].get == "avatarChild")
+			$("#aptitude-check").show(ANIMATION_SPEED);
+		else
+			$("#aptitude-check").hide(ANIMATION_SPEED);
+	}
+	
+	function updateBaseSelection(ch) {
+		var baseSelection = $("#base-select").empty().prop("disabled", false);
+		
+		var character = db.character[ch];
+		var baseList = [];
+		for (var key in character.base)
+			baseList.push(key);
+		
+		for (var i=0; i<baseList.length; i++) {
+			baseSelection.append($("<option/>", {
+				text	: baseList[i],
+				value	: baseList[i],
+			}))
+		}
+		
+		// Assume there is at least 1 base
+		return baseList[0];
+	}
+	
+	function updateParentList(list) {
+		if (list) {
+			$("#child-custom").show(ANIMATION_SPEED);
+			var parentSelect = $("#parent-select").empty().append($("<option>").text("Select parent").val("none").prop("disabled", true));
+			for (var i=0; i<list.length; i++)
+				parentSelect.append($("<option>").val(list[i]).text(db.character[list[i]].name));
+			parentSelect.val("none");
+		}else
+			$("#child-custom").hide(ANIMATION_SPEED);
+	}
+	
+	function updateGrandparentList(list) {
+		if (list) {
+			var parentSelect = $("#grandparent-select").show(ANIMATION_SPEED).empty().append($("<option>").text("Select grandparent").val("none").prop("disabled", true));
+			for (var i=0; i<list.length; i++)
+				if (list[i] != "kamui")
+					parentSelect.append($("<option>").val(list[i]).text(db.character[list[i]].name));
+			parentSelect.val("none");
+		}else
+			$("#grandparent-select").hide(ANIMATION_SPEED);
+	}
+	
+	function updateLevelSelect() {
 		$("#class-change-select").prop("disabled", true).empty().append($("<option/>").text("Select a class"));
 		var selectLevel = $("#level-change-select").prop("disabled", false).empty();
 		selectLevel.append($("<option>").text("Select a level").val("none").prop("disabled", true));

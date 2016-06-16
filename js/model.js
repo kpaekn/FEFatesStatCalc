@@ -18,7 +18,7 @@ var Character = function(preset) {
 	for (var attr in preset)
 		this[attr] = preset[attr];
 	
-	if (this.gen == 2) {
+	if (this.gen == "child" || this.gen == "avatarChild") {
 		this.base.Standard = {}
 		this.base.Standard.level = this.childBase.level;
 		this.base.Standard.stat = {};
@@ -28,19 +28,49 @@ var Character = function(preset) {
 	}
 }
 
-Character.prototype.setParent = function(varParent) {
-	if (this.gen == 2) {
-		var mainParent = db.character[this.mainParent];
-		for (var attr in this.childGrowth) {
-			this.growth[attr] = (varParent.growth[attr] + this.childGrowth[attr])/2;
-			this.cap[attr] = varParent.cap[attr] + mainParent.cap[attr] + 1;
+Character.prototype.getParentList = function() {
+	if (this.fixedParent) {
+		var filter = {};
+		var parentGen = db.character[this.fixedParent].gen;
+		if (parentGen != "avatar") {
+			filter.avatar = true;
+			if (parentGen == "father")
+				filter.mother = true;
+			if (parentGen == "mother")
+				filter.father = true;
+		}else {
+			filter.mother = true;
+			filter.father = true;
+			filter.exclusive = true;
+			filter.child = true;
 		}
-		return this;
+		
+		var ret = [];
+		for (var ch in db.character) {
+			if (filter[db.character[ch].gen])
+				ret.push(ch);
+		}
+		
+		return ret;
 	}
 }
 
-Character.prototype.getPartnerList = function() {
-	
+Character.prototype.setParent = function(varParent) {
+	if (this.gen == "child" || this.gen == "avatarChild") {
+		this.varParent = varParent;
+		this.evaluateChildStat();
+	}
+}
+
+Character.prototype.evaluateChildStat = function() {
+	var fixedParent = db.character[this.fixedParent];
+	for (var attr in this.childGrowth) {
+		this.growth[attr] = (this.varParent.growth[attr] + this.childGrowth[attr])/2;
+		this.cap[attr] = this.varParent.cap[attr] + fixedParent.cap[attr];
+		if (this.varParent.gen != "child")
+			this.cap[attr]++;
+	}
+	return this;
 }
 
 var db = {};
@@ -595,7 +625,7 @@ db.character = {
 	kamui : new Character({
 		name	: "Corrin",
 		gender	: "either",
-		gen		: "parent",
+		gen		: "avatar",
 		baseClass : db.classes.nohrPrince,
 		classSet  : [ "nohrPrince" ],
 		base	: {},
@@ -671,6 +701,11 @@ db.character = {
 				this.growth[attr] = this.growthMod.none[attr] + this.growthMod.boon[boon][attr] + this.growthMod.bane[bane][attr];
 				this.cap[attr] = this.capMod.boon[boon][attr] + this.capMod.bane[bane][attr];
 			}
+			
+			for (var unit in db.character)
+				if (db.character[unit].varParent)
+					if (db.character[unit].varParent == this || unit == "kanna")
+						db.character[unit].evaluateChildStat();
 		},
 	}),
 
@@ -773,7 +808,7 @@ db.character = {
 		base	: {
 			Standard : new BaseStat(1, 16, 6, 0, 5, 7, 3, 4, 1),
 		},
-		growth	: new Stat(40, 50, 15, 60, 65, 55, 45, 40),
+		growth	: new Stat(30, 40, 5, 50, 55, 45, 35, 30),
 		cap		: new Stat(0, 0, 0, 1, 1, 1, 0, -2),
 		route	: "All",
 	}),
@@ -1359,7 +1394,7 @@ db.character = {
 	kanna : new Character({
 		name	: "Kanna",
 		gender	: "either",
-		gen		: "child",
+		gen		: "avatarChild",
 		baseClass : db.classes.nohrPrince,
 		classSet  : [ "nohrPrince" ],
 		base	: {},
@@ -1367,7 +1402,7 @@ db.character = {
 		cap		: {},
 		route	: "Children",
 		
-		mainParent	: "kamui",
+		fixedParent	: "kamui",
 		childBase	: new BaseStat(10, 7, 3, 6, 8, 8, 9, 5, 5),
 		childGrowth	: new Stat(30, 35, 30, 40, 45, 45, 25, 25),
 	}),
@@ -1383,8 +1418,24 @@ db.character = {
 		cap		: {},
 		route	: "Children",
 		
-		mainParent	: "azura",
+		fixedParent	: "azura",
 		childBase	: new BaseStat(10, 9, 6, 1, 7, 7, 5, 8, 7),
 		childGrowth	: new Stat(35, 45, 5, 45, 35, 25, 35, 25),
+	}),
+	
+	dwyer : new Character({
+		name	: "Dwyer",
+		gender	: "M",
+		gen		: "child",
+		baseClass : db.classes.troubadour,
+		classSet  : [ "troubadour" ],
+		base	: {},
+		growth	: {},
+		cap		: {},
+		route	: "Children",
+		
+		fixedParent	: "jakob",
+		childBase	: new BaseStat(10, 8, 7, 7, 2, 6, 4, 6, 7),
+		childGrowth	: new Stat(45, 45, 30, 20, 30, 30, 30, 35),
 	}),
 }

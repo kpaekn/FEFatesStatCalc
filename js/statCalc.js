@@ -6,6 +6,7 @@ const LEVEL_CAP_SPECIAL = 40;
 const SPECIAL_LEVEL_MODIFIER = 20;
 const PROMOTED_NOT_RPOMOTED_EXTRA_CAP = 20;
 const LEVEL_PROMOTION = 10;
+const APTITUDE = 10;
 const FIX = 10000;	// Hack-ish fix for floating point operation
 
 /*
@@ -86,7 +87,12 @@ StatCalculator.prototype.setCharacter = function(character, base) {
 	this.specialExtraLevel = (this.character.promotedNotPromoted ? PROMOTED_NOT_RPOMOTED_EXTRA_CAP : 0);
 	this.baseSet = base;
 	this.resetClassChange();
+	this.aptitude = 0;
 	return this.character;
+}
+
+StatCalculator.prototype.setAptitude = function(val) {
+	this.aptitude = (val ? APTITUDE : 0);
 }
 
 StatCalculator.prototype.addClassChange = function(level, targetClass) {
@@ -250,7 +256,7 @@ StatCalculator.prototype.compute = function() {
 			thisLevel.increaseLevel(prev);
 			
 			for (var attr in this.character.growth) {
-				var growth = (this.character.growth[attr] + prev.unitClass.growth[attr]);
+				var growth = (this.character.growth[attr] + prev.unitClass.growth[attr] + this.aptitude);
 				// Does not grow if stat is at cap
 				// The extra multiplication eliminates javascript floating point precision problem
 				thisLevel.statCap[attr] = prev.statCap[attr];

@@ -6,7 +6,6 @@ $(document).ready(function() {
 	db.character.kamui.initialize($("#boon-select").val(), $("#bane-select").val());
 	for (var i=1; i<=20; i++)
 		$("#extra-select").append($("<option>").val(i*5).text(i + " (+" + i*5 + " levels)"));
-	$("#avatar-custom").hide();
 	resetPanel();
 	
 	var unitList = {};
@@ -48,9 +47,9 @@ $(document).ready(function() {
 		$("#table-div").empty();
 		
 		if (this.value == "kamui")
-				$("#avatar-custom").show();
+				$("#avatar-custom").show(100);
 			else
-				$("#avatar-custom").hide();
+				$("#avatar-custom").hide(100);
 					
 		if (this.value != "none") {
 			var base = addBaseSelection(this.value);

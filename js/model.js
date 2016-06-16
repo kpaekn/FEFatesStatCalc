@@ -14,6 +14,35 @@ var BaseStat = function(level, HP, Str, Mag, Skl, Spd, Lck, Def, Res) {
 	this.stat = new Stat(HP, Str, Mag, Skl, Spd, Lck, Def, Res);
 }
 
+var Character = function(preset) {
+	for (var attr in preset)
+		this[attr] = preset[attr];
+	
+	if (this.gen == 2) {
+		this.base.Standard = {}
+		this.base.Standard.level = this.childBase.level;
+		this.base.Standard.stat = {};
+		for (var attr in this.baseClass.base) {
+			this.base.Standard.stat[attr] = this.childBase.stat[attr] + this.baseClass.base[attr];
+		}
+	}
+}
+
+Character.prototype.setParent = function(varParent) {
+	if (this.gen == 2) {
+		var mainParent = db.character[this.mainParent];
+		for (var attr in this.childGrowth) {
+			this.growth[attr] = (varParent.growth[attr] + this.childGrowth[attr])/2;
+			this.cap[attr] = varParent.cap[attr] + mainParent.cap[attr] + 1;
+		}
+		return this;
+	}
+}
+
+Character.prototype.getPartnerList = function() {
+	
+}
+
 var db = {};
 
 db.classes = {
@@ -563,14 +592,13 @@ db.classes = {
 
 db.character = {
 	
-	kamui : {
+	kamui : new Character({
 		name	: "Corrin",
 		gender	: "either",
+		gen		: "parent",
 		baseClass : db.classes.nohrPrince,
 		classSet  : [ "nohrPrince" ],
-		base	: {
-			Standard : {}
-		},
+		base	: {},
 		growth	: {},
 		cap		: {},
 		route	: "All",
@@ -630,6 +658,7 @@ db.character = {
 		
 		initialize : function(boon, bane) {
 			var keySet = new Stat(0, 0, 0, 0, 0, 0, 0, 0);
+			this.base.Standard = {};
 			this.base.Standard.level = 1;
 			this.base.Standard.stat = {};
 			for (var attr in keySet) {
@@ -643,11 +672,12 @@ db.character = {
 				this.cap[attr] = this.capMod.boon[boon][attr] + this.capMod.bane[bane][attr];
 			}
 		},
-	},
+	}),
 
-	azura : {
+	azura : new Character({
 		name	: "Azura",
 		gender	: "F",
+		gen		: "mother",
 		baseClass : db.classes.singer,
 		classSet  : [ "singer", "pegKnight" ],
 		base 	: {
@@ -656,11 +686,12 @@ db.character = {
 		growth	: new Stat(25, 50, 25, 60, 60, 40, 15, 35),
 		cap		: new Stat(0, 0, 0, 1, 3, 0, -3, 0),
 		route	: "All",
-	},
+	}),
 	
-	kaze : {
+	kaze : new Character({
 		name	: "Kaze",
 		gender	: "M",
+		gen		: "father",
 		baseClass : db.classes.ninja,
 		classSet  : [ "ninja", "samurai" ],
 		base: {
@@ -670,11 +701,12 @@ db.character = {
 		growth	: new Stat(55, 40, 0, 45, 65, 20, 20, 35),
 		cap		: new Stat(0, -2, 0, 2, 3, -2, -1, 0),
 		route	: "All",
-	},
+	}),
 	
-	gunter : {
+	gunter : new Character({
 		name	: "Gunter",
 		gender	: "M",
+		gen		: "exclusive",
 		baseClass : db.classes.greatKnight,
 		classSet  : [ "cavalier", "mercenary", "wyvernRider" ],
 		base	: {
@@ -684,11 +716,12 @@ db.character = {
 		growth	: new Stat(15, 5, 0, 5, 0, 15, 5, 5),
 		cap		: new Stat(0, 2, 0, 1, -2, 0, 2, -2),
 		route	: "All",
-	},
+	}),
 
-	felicia : {
+	felicia : new Character({
 		name	: "Felicia",
 		gender	: "F",
+		gen		: "mother",
 		baseClass : db.classes.maid,
 		classSet  : [ "troubadour", "mercenary" ],
 		base	: {
@@ -699,11 +732,12 @@ db.character = {
 		cap		: new Stat(0, -2, 2, 0, 1, 0, -1, 1),
 		route	: "All",
 		promotedNotPromoted : true,
-	},
+	}),
 
-	jakob : {
+	jakob : new Character({
 		name	: "Jakob",
 		gender	: "M",
+		gen		: "father",
 		baseClass : db.classes.maid,
 		classSet  : [ "troubadour", "cavalier" ],
 		base	: {
@@ -714,11 +748,12 @@ db.character = {
 		cap		: new Stat(0, 2, -2, 2, 0, -1, 0, -1),
 		route	: "All",
 		promotedNotPromoted : true,
-	},
+	}),
 
-	silas : {
+	silas : new Character({
 		name	: "Silas",
 		gender	: "M",
+		gen		: "father",
 		baseClass : db.classes.cavalier,
 		classSet  : [ "cavalier", "mercenary" ],
 		base	: {
@@ -727,11 +762,12 @@ db.character = {
 		growth	: new Stat(40, 45, 5, 50, 40, 40, 40, 25),
 		cap		: new Stat(0, 1, 0, 2, 0, -1, 0, -1),
 		route	: "All",
-	},
+	}),
 
-	mozume : {
+	mozume : new Character({
 		name	: "Mozu",
 		gender	: "F",
+		gen		: "mother",
 		baseClass : db.classes.villager,
 		classSet  : [ "villager", "archer" ],
 		base	: {
@@ -740,11 +776,12 @@ db.character = {
 		growth	: new Stat(40, 50, 15, 60, 65, 55, 45, 40),
 		cap		: new Stat(0, 0, 0, 1, 1, 1, 0, -2),
 		route	: "All",
-	},
+	}),
 
-	rinkah : {
+	rinkah : new Character({
 		name	: "Rinkah",
 		gender	: "F",
+		gen		: "mother",
 		baseClass : db.classes.oni,
 		classSet  : [ "oni", "ninja" ],
 		base	: {
@@ -753,11 +790,12 @@ db.character = {
 		growth	: new Stat(20, 25, 15, 50, 45, 35, 45, 20),
 		cap		: new Stat(0, -1, 0, -2, 1, 0, 2, 0),
 		route	: "Birthright",
-	},
+	}),
 
-	sakura : {
+	sakura : new Character({
 		name	: "Sakura",
 		gender	: "F",
+		gen		: "mother",
 		baseClass : db.classes.miko,
 		classSet  : [ "miko", "pegKnight" ],
 		base	: {
@@ -767,11 +805,12 @@ db.character = {
 		growth	: new Stat(45, 30, 50, 40, 40, 55, 30, 20),
 		cap		: new Stat(0, 0, 2, -1, 1, 0, -1, 0),
 		route	: "Birthright",
-	},
+	}),
 
-	hana : {
+	hana : new Character({
 		name	: "Hana",
 		gender	: "F",
+		gen		: "mother",
 		baseClass : db.classes.samurai,
 		classSet  : [ "samurai", "miko" ],
 		base	: {
@@ -781,11 +820,12 @@ db.character = {
 		growth	: new Stat(25, 55, 10, 45, 55, 25, 20, 30),
 		cap		: new Stat(0, 1, 0, 1, 2, -1, -3, 1),
 		route	: "Birthright",
-	},
+	}),
 
-	tsubaki : {
+	tsubaki : new Character({
 		name	: "Subaki",
 		gender	: "M",
+		gen		: "father",
 		baseClass : db.classes.pegKnight,
 		classSet  : [ "pegKnight", "samurai" ],
 		base	: {
@@ -794,11 +834,12 @@ db.character = {
 		growth	: new Stat(55, 30, 20, 50, 20, 25, 45, 5),
 		cap		: new Stat(0, -1, 0, 2, -2, -1, 3, -1),
 		route	: "Birthright",
-	},
+	}),
 
-	saizou : {
+	saizou : new Character({
 		name	: "Saizo",
 		gender	: "M",
+		gen		: "father",
 		baseClass : db.classes.ninja,
 		classSet  : [ "ninja", "samurai" ],
 		base	: {
@@ -808,11 +849,12 @@ db.character = {
 		growth	: new Stat(40, 50, 45, 60, 30, 55, 45, 10),
 		cap		: new Stat(0, 1, 0, 3, -2, 0, 1, -2),
 		route	: "Birthright",
-	},
+	}),
 
-	orochi : {
+	orochi : new Character({
 		name	: "Orochi",
 		gender	: "F",
+		gen		: "mother",
 		baseClass : db.classes.diviner,
 		classSet  : [ "diviner", "apoth" ],
 		base	: {
@@ -822,11 +864,12 @@ db.character = {
 		growth	: new Stat(35, 5, 65, 50, 15, 35, 25, 45),
 		cap		: new Stat(0, 0, 3, 2, -2, -1, -2, 1),
 		route	: "Birthright",
-	},
+	}),
 
-	hinoka : {
+	hinoka : new Character({
 		name	: "Hinoka",
 		gender	: "F",
+		gen		: "mother",
 		baseClass : db.classes.pegKnight,
 		classSet  : [ "pegKnight", "lancer" ],
 		base	: {
@@ -836,11 +879,12 @@ db.character = {
 		growth	: new Stat(45, 45, 15, 40, 45, 40, 35, 40),
 		cap		: new Stat(0, 1, -1, -1, 1, 0, -1, 2),
 		route	: "Birthright",
-	},
+	}),
 
-	azama : {
+	azama : new Character({
 		name	: "Azama",
 		gender	: "M",
+		gen		: "father",
 		baseClass : db.classes.monk,
 		classSet  : [ "monk", "apoth" ],
 		base	: {
@@ -850,11 +894,12 @@ db.character = {
 		growth	: new Stat(55, 50, 20, 40, 45, 40, 40, 20),
 		cap		: new Stat(0, 2, -3, 0, 1, 0, 1, 0),
 		route	: "Birthright",
-	},
+	}),
 
-	setsuna : {
+	setsuna : new Character({
 		name	: "Setsuna",
 		gender	: "F",
+		gen		: "mother",
 		baseClass : db.classes.archer,
 		classSet  : [ "archer", "ninja" ],
 		base	: {
@@ -864,11 +909,12 @@ db.character = {
 		growth	: new Stat(30, 20, 0, 30, 60, 30, 15, 40),
 		cap		: new Stat(0, 0, 0, 1, 3, -1, -1, -1),
 		route	: "Birthright",
-	},
+	}),
 
-	hayato : {
+	hayato : new Character({
 		name	: "Hayato",
 		gender	: "M",
+		gen		: "father",
 		baseClass : db.classes.diviner,
 		classSet  : [ "diviner", "oni" ],
 		base	: {
@@ -878,11 +924,12 @@ db.character = {
 		growth	: new Stat(50, 30, 40, 30, 45, 60, 40, 20),
 		cap		: new Stat(0, 0, 1, -1, 2, 1, -1, -1),
 		route	: "Birthright",
-	},
+	}),
 
-	oboro : {
+	oboro : new Character({
 		name	: "Oboro",
 		gender	: "F",
+		gen		: "mother",
 		baseClass : db.classes.lancer,
 		classSet  : [ "lancer", "apoth" ],
 		base	: {
@@ -891,11 +938,12 @@ db.character = {
 		growth	: new Stat(30, 40, 20, 40, 40, 40, 40, 30),
 		cap		: new Stat(0, 1, -1, 1, 1, -1, 1, -1),
 		route	: "Birthright",
-	},
+	}),
 
-	hinata : {
+	hinata : new Character({
 		name	: "Hinata",
 		gender	: "M",
+		gen		: "father",
 		baseClass : db.classes.samurai,
 		classSet  : [ "samurai", "oni" ],
 		base	: {
@@ -904,11 +952,12 @@ db.character = {
 		growth	: new Stat(55, 35, 0, 25, 15, 45, 45, 15),
 		cap		: new Stat(0, 1, 0, -1, -2, 0, 2, 0),
 		route	: "Birthright",
-	},
+	}),
 
-	takumi : {
+	takumi : new Character({
 		name	: "Takumi",
 		gender	: "M",
+		gen		: "father",
 		baseClass : db.classes.archer,
 		classSet  : [ "archer", "lancer" ],
 		base	: {
@@ -917,11 +966,12 @@ db.character = {
 		growth	: new Stat(50, 35, 0, 60, 40, 45, 35, 20),
 		cap		: new Stat(0, 1, 0, 3, -2, 1, 0, -2),
 		route	: "Birthright",
-	},
+	}),
 
-	kagero : {
+	kagero : new Character({
 		name	: "Kagero",
 		gender	: "F",
+		gen		: "mother",
 		baseClass : db.classes.ninja,
 		classSet  : [ "ninja", "diviner" ],
 		base	: {
@@ -930,11 +980,12 @@ db.character = {
 		growth	: new Stat(30, 65, 0, 20, 50, 30, 25, 40),
 		cap		: new Stat(0, 3, 0, -1, -1, 0, -1, 1),
 		route	: "Birthright",
-	},
+	}),
 
-	kaden : {
+	kaden : new Character({
 		name	: "Kaden",
 		gender	: "M",
+		gen		: "father",
 		baseClass : db.classes.kitsune,
 		classSet  : [ "kitsune", "diviner" ],
 		base	: {
@@ -943,11 +994,12 @@ db.character = {
 		growth	: new Stat(45, 40, 10, 25, 45, 50, 35, 40),
 		cap		: new Stat(0, 1, 0, -3, 2, 1, -2, 2),
 		route	: "Birthright",
-	},
+	}),
 
-	ryoma : {
+	ryoma : new Character({
 		name	: "Ryoma",
 		gender	: "M",
+		gen		: "father",
 		baseClass : db.classes.swordSaint,
 		classSet  : [ "samurai", "pegKnight" ],
 		base	: {
@@ -956,11 +1008,12 @@ db.character = {
 		growth	: new Stat(50, 45, 0, 50, 45, 40, 35, 25),
 		cap		: new Stat(0, 1, 0, 2, 1, 1, -2, -2),
 		route	: "Birthright",
-	},
+	}),
 
-	elise : {
+	elise : new Character({
 		name	: "Elise",
 		gender	: "F",
+		gen		: "mother",
 		baseClass : db.classes.troubadour,
 		classSet  : [ "troubadour", "wyvernRider" ],
 		base	: {
@@ -970,11 +1023,12 @@ db.character = {
 		growth	: new Stat(30, 5, 65, 25, 55, 70, 15, 40),
 		cap		: new Stat(0, -1, 3, -2, 1, 1, -3, 1),
 		route	: "Conquest",
-	},
+	}),
 
-	effie : {
+	effie : new Character({
 		name	: "Effie",
 		gender	: "F",
+		gen		: "mother",
 		baseClass : db.classes.knight,
 		classSet  : [ "knight", "troubadour" ],
 		base	: {
@@ -984,11 +1038,12 @@ db.character = {
 		growth	: new Stat(35, 60, 0, 35, 50, 50, 35, 30),
 		cap		: new Stat(0, 3, 0, -1, 1, 0, -1, -1),
 		route	: "Conquest",
-	},
+	}),
 
-	arthur : {
+	arthur : new Character({
 		name	: "Arthur",
 		gender	: "M",
+		gen		: "father",
 		baseClass : db.classes.fighter,
 		classSet  : [ "fighter", "cavalier" ],
 		base	: {
@@ -998,11 +1053,12 @@ db.character = {
 		growth	: new Stat(50, 45, 0, 55, 35, 5, 45, 20),
 		cap		: new Stat(0, 1, 0, 3, 0, -3, 1, -1),
 		route	: "Conquest",
-	},
+	}),
 
-	odin : {
+	odin : new Character({
 		name	: "Odin",
 		gender	: "M",
+		gen		: "father",
 		baseClass : db.classes.mage,
 		classSet  : [ "mage", "samurai" ],
 		base	: {
@@ -1012,11 +1068,12 @@ db.character = {
 		growth	: new Stat(55, 35, 30, 55, 35, 60, 40, 20),
 		cap		: new Stat(0, 0, 1, 1, -1, 1, 0, -1),
 		route	: "Conquest",
-	},
+	}),
 
-	niles : {
+	niles : new Character({
 		name	: "Niles",
 		gender	: "M",
+		gen		: "father",
 		baseClass : db.classes.outlaw,
 		classSet  : [ "outlaw", "mage" ],
 		base	: {
@@ -1026,11 +1083,12 @@ db.character = {
 		growth	: new Stat(40, 35, 20, 40, 50, 30, 30, 40),
 		cap		: new Stat(0, -2, 0, -1, 3, 0, 0, 1),
 		route	: "Conquest",
-	},
+	}),
 
-	nyx : {
+	nyx : new Character({
 		name	: "Nyx",
 		gender	: "F",
+		gen		: "mother",
 		baseClass : db.classes.mage,
 		classSet  : [ "mage", "outlaw" ],
 		base	: {
@@ -1039,11 +1097,12 @@ db.character = {
 		growth	: new Stat(30, 5, 50, 35, 50, 20, 15, 30),
 		cap		: new Stat(0, 0, 3, -2, 2, -1, -2, 1),
 		route	: "Conquest",
-	},
+	}),
 
-	camilla : {
+	camilla : new Character({
 		name	: "Camilla",
 		gender	: "F",
+		gen		: "mother",
 		baseClass : db.classes.maligKnight,
 		classSet  : [ "wyvernRider", "mage" ],
 		base	: {
@@ -1052,11 +1111,12 @@ db.character = {
 		growth	: new Stat(40, 50, 25, 50, 55, 25, 35, 45),
 		cap		: new Stat(0, 1, -1, 1, 1, -2, 1, 0),
 		route	: "Conquest",
-	},
+	}),
 
-	selena : {
+	selena : new Character({
 		name	: "Selena",
 		gender	: "F",
+		gen		: "mother",
 		baseClass : db.classes.mercenary,
 		classSet  : [ "mercenary", "pegKnight" ],
 		base	: {
@@ -1065,11 +1125,12 @@ db.character = {
 		growth	: new Stat(40, 30, 5, 25, 45, 30, 45, 30),
 		cap		: new Stat(0, -1, 0, -1, 2, 0, 1, 0),
 		route	: "Conquest",
-	},
+	}),
 
-	beruka : {
+	beruka : new Character({
 		name	: "Beruka",
 		gender	: "F",
+		gen		: "mother",
 		baseClass : db.classes.wyvernRider,
 		classSet  : [ "wyvernRider", "fighter" ],
 		base	: {
@@ -1078,11 +1139,12 @@ db.character = {
 		growth	: new Stat(45, 30, 10, 55, 30, 45, 40, 25),
 		cap		: new Stat(0, -1, 0, 2, -2, 0, 2, -1),
 		route	: "Conquest",
-	},
+	}),
 
-	laslow : {
+	laslow : new Character({
 		name	: "Laslow",
 		gender	: "M",
+		gen		: "father",
 		baseClass : db.classes.mercenary,
 		classSet  : [ "mercenary", "ninja" ],
 		base	: {
@@ -1092,11 +1154,12 @@ db.character = {
 		growth	: new Stat(50, 45, 0, 45, 30, 55, 35, 25),
 		cap		: new Stat(0, 1, 0, 2, -1, 1, -1, -1),
 		route	: "Conquest",
-	},
+	}),
 
-	peri : {
+	peri : new Character({
 		name	: "Peri",
 		gender	: "F",
+		gen		: "mother",
 		baseClass : db.classes.cavalier,
 		classSet  : [ "cavalier", "mage" ],
 		base	: {
@@ -1106,11 +1169,12 @@ db.character = {
 		growth	: new Stat(30, 50, 5, 30, 50, 35, 25, 45),
 		cap		: new Stat(0, 1, 0, -1, 1, 0, -2, 2),
 		route	: "Conquest",
-	},
+	}),
 
-	charlotte : {
+	charlotte : new Character({
 		name	: "Charlotte",
 		gender	: "F",
+		gen		: "mother",
 		baseClass : db.classes.fighter,
 		classSet  : [ "fighter", "troubadour" ],
 		base	: {
@@ -1119,11 +1183,12 @@ db.character = {
 		growth	: new Stat(65, 55, 0, 35, 50, 45, 20, 5),
 		cap		: new Stat(0, 3, 0, 0, 2, 0, -2, -2),
 		route	: "Conquest",
-	},
+	}),
 
-	benny : {
+	benny : new Character({
 		name	: "Benny",
 		gender	: "M",
+		gen		: "father",
 		baseClass : db.classes.knight,
 		classSet  : [ "knight", "fighter" ],
 		base	: {
@@ -1132,11 +1197,12 @@ db.character = {
 		growth	: new Stat(50, 40, 0, 50, 10, 35, 55, 45),
 		cap		: new Stat(0, 0, 0, 0, -3, 0, 3, 1),
 		route	: "Conquest",
-	},
+	}),
 
-	leo : {
+	leo : new Character({
 		name	: "Leo",
 		gender	: "M",
+		gen		: "father",
 		baseClass : db.classes.darkKnight,
 		classSet  : [ "mage", "troubadour" ],
 		base	: {
@@ -1145,11 +1211,12 @@ db.character = {
 		growth	: new Stat(45, 25, 55, 35, 45, 45, 30, 45),
 		cap		: new Stat(0, -2, 2, 0, -2, 0, 0, 2),
 		route	: "Conquest",
-	},
+	}),
 
-	keaton : {
+	keaton : new Character({
 		name	: "Keaton",
 		gender	: "M",
+		gen		: "father",
 		baseClass : db.classes.wolfskin,
 		classSet  : [ "wolfskin", "fighter" ],
 		base	: {
@@ -1158,11 +1225,12 @@ db.character = {
 		growth	: new Stat(60, 60, 0, 20, 35, 30, 50, 25),
 		cap		: new Stat(0, 3, 0, -2, -1, 0, 2, -1),
 		route	: "Conquest",
-	},
+	}),
 
-	xander : {
+	xander : new Character({
 		name	: "Xander",
 		gender	: "M",
+		gen		: "father",
 		baseClass : db.classes.paladin,
 		classSet  : [ "cavalier", "wyvernRider" ],
 		base	: {
@@ -1171,11 +1239,12 @@ db.character = {
 		growth	: new Stat(45, 50, 5, 40, 35, 60, 40, 15),
 		cap		: new Stat(0, 2, -1, -1, -1, 2, 1, -2),
 		route	: "Conquest",
-	},
+	}),
 
-	reina : {
+	reina : new Character({
 		name	: "Reina",
 		gender	: "F",
+		gen		: "exclusive",
 		baseClass : db.classes.kinshiKnight,
 		classSet  : [ "pegKnight", "diviner", "ninja" ],
 		base	: {
@@ -1185,11 +1254,12 @@ db.character = {
 		growth	: new Stat(40, 45, 5, 20, 45, 10, 20, 10),
 		cap		: new Stat(0, 2, 0, 0, 2, -1, -2, -1),
 		route	: "Birthright",
-	},
+	}),
 
-	scarlet : {
+	scarlet : new Character({
 		name	: "Scarlet",
 		gender	: "F",
+		gen		: "exclusive",
 		baseClass : db.classes.wyvernLord,
 		classSet  : [ "wyvernRider", "outlaw", "knight" ],
 		base	: {
@@ -1199,11 +1269,12 @@ db.character = {
 		growth	: new Stat(30, 45, 20, 40, 50, 40, 25, 20),
 		cap		: new Stat(0, 2, 0, 0, 1, -1, 0, -2),
 		route	: "Birthright",
-	},
+	}),
 
-	flora : {
+	flora : new Character({
 		name	: "Flora",
 		gender	: "F",
+		gen		: "exclusive",
 		baseClass : db.classes.maid,
 		classSet  : [ "troubadour", "mage", "mercenary" ],
 		base	: {
@@ -1212,11 +1283,12 @@ db.character = {
 		growth	: new Stat(35, 40, 20, 45, 30, 35, 30, 30),
 		cap		: new Stat(0, 1, -1, 2, 0, -1, 1, -1),
 		route	: "Conquest",
-	},
+	}),
 
-	shura : {
+	shura : new Character({
 		name	: "Shura",
 		gender	: "M",
+		gen		: "exclusive",
 		baseClass : db.classes.adventurer,
 		classSet  : [ "outlaw", "ninja", "fighter" ],
 		base	: {
@@ -1226,11 +1298,12 @@ db.character = {
 		growth	: new Stat(30, 25, 10, 20, 35, 30, 15, 35),
 		cap		: new Stat(0, -1, 0, -1, 3, -1, -2, 2),
 		route	: "All",
-	},
+	}),
 
-	izana : {
+	izana : new Character({
 		name	: "Izana",
 		gender	: "M",
+		gen		: "exclusive",
 		baseClass : db.classes.exorcist,
 		classSet  : [ "monk", "samurai", "apoth" ],
 		base	: {
@@ -1239,11 +1312,12 @@ db.character = {
 		growth	: new Stat(45, 15, 35, 55, 30, 45, 35, 35),
 		cap		: new Stat(0, 0, 1, 1, -2, 0, 0, 1),
 		route	: "All",
-	},
+	}),
 
-	yukimura : {
+	yukimura : new Character({
 		name	: "Yukimura",
 		gender	: "M",
+		gen		: "exclusive",
 		baseClass : db.classes.mechanist,
 		classSet  : [ "apoth", "samurai", "monk" ],
 		base	: {
@@ -1252,11 +1326,12 @@ db.character = {
 		growth	: new Stat(25, 25, 5, 40, 15, 30, 25, 30),
 		cap		: new Stat(0, -1, 0, 3, -1, 0, -1, 0),
 		route	: "Birthright",
-	},
+	}),
 
-	fuuga : {
+	fuuga : new Character({
 		name	: "Fuga",
 		gender	: "M",
+		gen		: "exclusive",
 		baseClass : db.classes.weaponMaster,
 		classSet  : [ "samurai", "oni", "monk" ],
 		base	: {
@@ -1265,11 +1340,12 @@ db.character = {
 		growth	: new Stat(20, 20, 0, 15, 5, 20, 10, 10),
 		cap		: new Stat(0, 2, -1, 1, 0, -1, 2, -2),
 		route	: "Revelation",
-	},
+	}),
 
-	anna : {
+	anna : new Character({
 		name	: "Anna",
 		gender	: "F",
+		gen		: "exclusive",
 		baseClass : db.classes.outlaw,
 		classSet  : [ "outlaw", "troubadour", "apoth" ],
 		base	: {
@@ -1278,5 +1354,37 @@ db.character = {
 		growth	: new Stat(35, 30, 55, 30, 40, 70, 20, 45),
 		cap		: new Stat(0, -1, 1, 0, -1, 2, -2, 2),
 		route	: "Others",
-	},
+	}),
+	
+	kanna : new Character({
+		name	: "Kanna",
+		gender	: "either",
+		gen		: "child",
+		baseClass : db.classes.nohrPrince,
+		classSet  : [ "nohrPrince" ],
+		base	: {},
+		growth	: {},
+		cap		: {},
+		route	: "Children",
+		
+		mainParent	: "kamui",
+		childBase	: new BaseStat(10, 7, 3, 6, 8, 8, 9, 5, 5),
+		childGrowth	: new Stat(30, 35, 30, 40, 45, 45, 25, 25),
+	}),
+	
+	shigure : new Character({
+		name	: "Shigure",
+		gender	: "M",
+		gen		: "child",
+		baseClass : db.classes.pegKnight,
+		classSet  : [ "pegKnight" ],
+		base	: {},
+		growth	: {},
+		cap		: {},
+		route	: "Children",
+		
+		mainParent	: "azura",
+		childBase	: new BaseStat(10, 9, 6, 1, 7, 7, 5, 8, 7),
+		childGrowth	: new Stat(35, 45, 5, 45, 35, 25, 35, 25),
+	}),
 }

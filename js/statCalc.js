@@ -82,7 +82,7 @@ var StatCalculator = function() {
 
 
 StatCalculator.prototype.setCharacter = function(character, base) {
-	this.character = CharacterSet[character];
+	this.character = db.character[character];
 	this.specialExtraLevel = (this.character.promotedNotPromoted ? PROMOTED_NOT_RPOMOTED_EXTRA_CAP : 0);
 	this.baseSet = base;
 	this.resetClassChange();
@@ -90,7 +90,7 @@ StatCalculator.prototype.setCharacter = function(character, base) {
 }
 
 StatCalculator.prototype.addClassChange = function(level, targetClass) {
-	var newClass = ClassSet[targetClass];
+	var newClass = db.classes[targetClass];
 	var latestClassChange = this.getLatestClassChange();
 	var oldClass = (latestClassChange ? latestClassChange.targetClass : this.character.baseClass);
 	var newClassChange = new ClassChange(level, oldClass, newClass);
@@ -139,8 +139,8 @@ StatCalculator.prototype.getAvaiableClassChange = function(level) {
 	for (var i=0; i<this.character.classSet.length; i++) {
 		var newAltClass = this.character.classSet[i];
 		altClass.push(newAltClass);
-		for (var j=0; ClassSet[newAltClass].promoteTo && j<ClassSet[newAltClass].promoteTo.length; j++) {
-			altClass.push(ClassSet[newAltClass].promoteTo[j]);
+		for (var j=0; db.classes[newAltClass].promoteTo && j<db.classes[newAltClass].promoteTo.length; j++) {
+			altClass.push(db.classes[newAltClass].promoteTo[j]);
 		}
 	}
 	
@@ -152,7 +152,7 @@ StatCalculator.prototype.getAvaiableClassChange = function(level) {
 		if (level >= LEVEL_PROMOTION) {
 			ret.masterSeal = {};
 			for (var i=0; i<curClass.promoteTo.length; i++)
-				ret.masterSeal[curClass.promoteTo[i]] = ClassSet[curClass.promoteTo[i]];
+				ret.masterSeal[curClass.promoteTo[i]] = db.classes[curClass.promoteTo[i]];
 		}
 		
 		this.filterClassByTier(curClass, ret.parallelSeal, "tier1");
@@ -181,19 +181,19 @@ StatCalculator.prototype.getAvaiableClassChange = function(level) {
 }
 
 StatCalculator.prototype.filterClassByTier = function(currentClass, set, tier) {
-	for (var parClass in ClassSet) {
-		var cl = ClassSet[parClass];
+	for (var parClass in db.classes) {
+		var cl = db.classes[parClass];
 		if (cl.tier == tier && cl != currentClass) {
 			if (cl.restriction || cl.genderLock) {
 				// Since a class is either genderlock or has character restriction, we can check the 2 conditions separately
 				for (var i=0; cl.restriction && i<cl.restriction.length; i++)
-					if (this.character == CharacterSet[cl.restriction[i]])
-						set[parClass] = ClassSet[parClass];
+					if (this.character == db.character[cl.restriction[i]])
+						set[parClass] = db.classes[parClass];
 				
 				if (cl.genderLock && (this.character.gender == cl.genderLock || this.character.gender == "either"))
-					set[parClass] = ClassSet[parClass];
+					set[parClass] = db.classes[parClass];
 			}else
-				set[parClass] = ClassSet[parClass];
+				set[parClass] = db.classes[parClass];
 		}
 	}
 }
@@ -201,8 +201,8 @@ StatCalculator.prototype.filterClassByTier = function(currentClass, set, tier) {
 StatCalculator.prototype.populateAltClassSet = function(currentClass, altClassList, tierException, heartSet, otherSetList) {
 	for (var i=0; i<altClassList.length; i++) {
 		var altClass = altClassList[i];
-		if (ClassSet[altClass].tier != tierException && ClassSet[altClass] != currentClass) {
-			heartSet[altClass] = ClassSet[altClass];
+		if (db.classes[altClass].tier != tierException && db.classes[altClass] != currentClass) {
+			heartSet[altClass] = db.classes[altClass];
 			for (var j=0; j<otherSetList.length; j++)
 				delete otherSetList[j][altClass];
 		}

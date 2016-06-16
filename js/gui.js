@@ -3,37 +3,37 @@ var calc = new StatCalculator();
 $(document).ready(function() {
 	
 	calc = new StatCalculator();
-	CharacterSet.kamui.initialize($("#boon-select").val(), $("#bane-select").val());
+	db.character.kamui.initialize($("#boon-select").val(), $("#bane-select").val());
 	for (var i=1; i<=20; i++)
 		$("#extra-select").append($("<option>").val(i*5).text(i + " (+" + i*5 + " levels)"));
 	$("#avatar-custom").hide();
 	resetPanel();
 	
 	var unitList = {};
-	for (var unit in CharacterSet) {
-		if (!unitList[CharacterSet[unit].route])
-			unitList[CharacterSet[unit].route] = [];
-		unitList[CharacterSet[unit].route].push(unit);
+	for (var unit in db.character) {
+		if (!unitList[db.character[unit].route])
+			unitList[db.character[unit].route] = [];
+		unitList[db.character[unit].route].push(unit);
 	}
 	
 	for (var route in unitList) {
 		var unitSelect = $("#unit-select");
 		unitSelect.append($("<option>").text("---" + route + "---").prop("disabled", true));
 		for (var i=0; i<unitList[route].length; i++)
-			unitSelect.append($("<option>").val(unitList[route][i]).text(CharacterSet[unitList[route][i]].name));
+			unitSelect.append($("<option>").val(unitList[route][i]).text(db.character[unitList[route][i]].name));
 	}
 	
 	$("#boon-select").change(function() {
 		$("option.bane").prop("disabled", false);
 		$("select option.bane[value=" + this.value + "]").prop("disabled", true);
-		CharacterSet.kamui.initialize($("#boon-select").val(), $("#bane-select").val());
+		db.character.kamui.initialize($("#boon-select").val(), $("#bane-select").val());
 		updateTable();
 	});
 	
 	$("#bane-select").change(function() {
 		$("option.boon").prop("disabled", false);
 		$("select option.boon[value=" + this.value + "]").prop("disabled", true);
-		CharacterSet.kamui.initialize($("#boon-select").val(), $("#bane-select").val());
+		db.character.kamui.initialize($("#boon-select").val(), $("#bane-select").val());
 		updateTable();
 	});
 	
@@ -64,7 +64,7 @@ $(document).ready(function() {
 	function addBaseSelection(ch) {
 		var baseSelection = $("#base-select").empty().prop("disabled", false);
 		
-		var character = CharacterSet[ch];
+		var character = db.character[ch];
 		var baseList = [];
 		for (var key in character.base)
 			baseList.push(key);
@@ -105,7 +105,7 @@ $(document).ready(function() {
 			classSelect.append($("<option/>").text("-----Master Seal-----").prop("disabled", true));
 			for (var c in classSet.masterSeal)
 				classSelect.append($("<option/>", {
-					text	: ClassSet[c].name,
+					text	: db.classes[c].name,
 					value	: c,
 				}))
 		}
@@ -113,21 +113,21 @@ $(document).ready(function() {
 		classSelect.append($("<option/>").text("-----Heart Seal-----").prop("disabled", true));
 			for (var c in classSet.heartSeal)
 				classSelect.append($("<option/>", {
-					text	: ClassSet[c].name,
+					text	: db.classes[c].name,
 					value	: c,
 				}))
 				
 		classSelect.append($("<option/>").text("---Friendship/Partner Seal---").prop("disabled", true));
 			for (var c in classSet.parallelSeal)
 				classSelect.append($("<option/>", {
-					text	: ClassSet[c].name,
+					text	: db.classes[c].name,
 					value	: c,
 				}))
 				
 		classSelect.append($("<option/>").text("-----Special Seal-----").prop("disabled", true));
 			for (var c in classSet.specialSeal)
 				classSelect.append($("<option/>", {
-					text	: ClassSet[c].name,
+					text	: db.classes[c].name,
 					value	: c,
 				}))
 	});

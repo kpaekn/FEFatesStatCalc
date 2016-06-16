@@ -98,7 +98,7 @@ StatCalculator.prototype.setAptitude = function(val) {
 StatCalculator.prototype.addClassChange = function(level, targetClass) {
 	var newClass = db.classes[targetClass];
 	var latestClassChange = this.getLatestClassChange();
-	var oldClass = (latestClassChange ? latestClassChange.targetClass : this.character.baseClass);
+	var oldClass = (latestClassChange ? latestClassChange.targetClass : db.classes[this.character.baseClass]);
 	var newClassChange = new ClassChange(level, oldClass, newClass);
 	this.classChanges.push(newClassChange)
 }
@@ -121,7 +121,7 @@ StatCalculator.prototype.getAvailableLevelRange = function() {
 			baseLevel -= SPECIAL_LEVEL_MODIFIER;
 		
 	}else {
-		curClass = this.character.baseClass;
+		curClass = db.classes[this.character.baseClass];
 		baseLevel = this.character.base[this.baseSet].level;
 	}
 	
@@ -139,7 +139,7 @@ StatCalculator.prototype.getAvailableLevelRange = function() {
 
 StatCalculator.prototype.getAvaiableClassChange = function(level) {
 	var latestClassChange = this.getLatestClassChange();
-	var curClass = (latestClassChange ? latestClassChange.targetClass : this.character.baseClass);
+	var curClass = (latestClassChange ? latestClassChange.targetClass : db.classes[this.character.baseClass]);
 	
 	var altClass = [];
 	for (var i=0; i<this.character.classSet.length; i++) {
@@ -226,13 +226,13 @@ StatCalculator.prototype.compute = function() {
 	
 	// Starting level is defined by character base
 	var baseStat = this.character.base[this.baseSet];
-	var startingLevel = new LevelAttribute(this.character.baseClass, baseStat.stat);
-	if (this.character.baseClass.tier != "tier2")
+	var startingLevel = new LevelAttribute(db.classes[this.character.baseClass], baseStat.stat);
+	if (db.classes[this.character.baseClass].tier != "tier2")
 		startingLevel.setInitialLevel(baseStat.level, 0);
 	else
 		startingLevel.setInitialLevel(0, baseStat.level);
 	for (var attr in startingLevel.stat)
-		startingLevel.statCap[attr] = this.character.baseClass.maxStat[attr] + this.character.cap[attr];
+		startingLevel.statCap[attr] = db.classes[this.character.baseClass].maxStat[attr] + this.character.cap[attr];
 	averageStats[0].push(startingLevel);
 	var prev = startingLevel;
 	

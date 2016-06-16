@@ -17,39 +17,67 @@ var BaseStat = function(level, HP, Str, Mag, Skl, Spd, Lck, Def, Res) {
 var Character = function(preset) {
 	for (var attr in preset)
 		this[attr] = preset[attr];
+		
+	this.base = this.base || {};
+	this.growth = this.growth || {};
+	this.cap = this.cap || {};
 	
 	if (this.gen == "child" || this.gen == "avatarChild") {
-		this.base.Standard = {}
+		this.base.Standard = {};
 		this.base.Standard.level = this.childBase.level;
 		this.base.Standard.stat = {};
-		for (var attr in this.baseClass.base) {
-			this.base.Standard.stat[attr] = this.childBase.stat[attr] + this.baseClass.base[attr];
+		for (var attr in db.classes[this.baseClass].base) {
+			this.base.Standard.stat[attr] = this.childBase.stat[attr] + db.classes[this.baseClass].base[attr];
 		}
 	}
 }
 
 Character.prototype.getParentList = function() {
 	if (this.fixedParent) {
-		var filter = {};
+		var genFilter = {};
+		var routeFilter = {};
 		var parentGen = db.character[this.fixedParent].gen;
-		if (parentGen != "avatar") {
-			filter.avatar = true;
-			if (parentGen == "father")
-				filter.mother = true;
-			if (parentGen == "mother")
-				filter.father = true;
+		var parentRoute = db.character[this.fixedParent].route;
+		var ret = [];
+		
+		if (this.fixedParent == "kamui") {
+			for (var ch in db.character)
+				if (ch != "kamui" && ch != "kanna")
+					ret.push(ch);
 		}else {
-			filter.mother = true;
-			filter.father = true;
-			filter.exclusive = true;
-			filter.child = true;
+			genFilter.avatar = true;
+			routeFilter.All = true;
+			
+			if (parentGen == "father")
+				genFilter.mother = true;
+			if (parentGen == "mother")
+				genFilter.father = true;
+			
+			if (parentRoute == "All") {
+				routeFilter.Birthright = true;
+				routeFilter.Conquest = true;
+			}
+			if (parentRoute == "Birthright")
+				routeFilter.Birthright = true;
+			if (parentRoute == "Conquest")
+				routeFilter.Conquest = true;
+			
+			revFilter = {}
+			if (this.revParent)
+				for (var i=0; i<this.revParent.length; i++)
+					revFilter[this.revParent[i]] = true;
+					
+			exceptionFilter = {}
+			if (this.nonParent)
+				for (var i=0; i<this.nonParent.length; i++)
+					exceptionFilter[this.nonParent[i]] = true;
+			
+			for (var ch in db.character) {
+				if ((genFilter[db.character[ch].gen] && routeFilter[db.character[ch].route] && !exceptionFilter[ch]) || revFilter[ch])
+					ret.push(ch);
+			}
 		}
 		
-		var ret = [];
-		for (var ch in db.character) {
-			if (filter[db.character[ch].gen])
-				ret.push(ch);
-		}
 		
 		return ret;
 	}
@@ -70,6 +98,26 @@ Character.prototype.evaluateChildStat = function() {
 		if (this.varParent.gen != "child")
 			this.cap[attr]++;
 	}
+	
+	this.classSet = [];
+	this.classSet.push(this.baseClass);
+	var secondClass = fixedParent.classSet[0];
+	if (secondClass == "singer" || secondClass == this.baseClass) {
+		secondClass = fixedParent.classSet[1];
+		if (secondClass == this.baseClass && fixedParent.classSet[0] == "singer")
+			secondClass = db.classes[fixedParent.classSet[0]].parallel;
+	}
+	var thirdClass = this.varParent.classSet[0];
+	if (thirdClass == "singer" || thirdClass == this.baseClass || thirdClass == secondClass) {
+		thirdClass = this.varParent.classSet[1];
+		if (thirdClass == this.baseClass || thirdClass == secondClass)
+			thirdClass = db.classes[this.varParent.classSet[0]].parallel;
+	}
+	if (secondClass)
+		this.classSet.push(secondClass);
+	if (thirdClass)
+		this.classSet.push(thirdClass);
+	
 	return this;
 }
 
@@ -109,6 +157,7 @@ db.classes = {
 		name	: "Samurai",
 		tier	: "tier1",
 		promoteTo : [ "swordSaint", "weaponMaster" ],
+		parallel: "mercenary",
 		base	: new Stat(17, 4, 0, 5, 8, 3, 3, 3),
 		growth	: new Stat(10, 10, 0, 15, 20, 15, 0, 10),
 		maxStat	: new Stat(40, 20, 16, 23, 25, 24, 18, 20),
@@ -134,6 +183,7 @@ db.classes = {
 		name	: "Villager",
 		tier	: "tier1",
 		promoteTo : [ "weaponMaster", "merchant" ],
+		parallel: "apoth",
 		base	: new Stat(17, 5, 0, 4, 5, 3, 4, 0),
 		growth	: new Stat(10, 10, 0, 10, 10, 20, 10, 0),
 		maxStat	: new Stat(35, 19, 15, 19, 19, 22, 18, 15),
@@ -161,6 +211,7 @@ db.classes = {
 		name	: "Oni Savage",
 		tier	: "tier1",
 		promoteTo : [ "shura", "blacksmith" ],
+		parallel: "fighter",
 		base	: new Stat(18, 6, 1, 2, 5, 0, 7, 1),
 		growth	: new Stat(20, 20, 10, 0, 10, 0, 20, 0),
 		maxStat	: new Stat(45, 24, 19, 16, 20, 17, 23, 18),
@@ -186,6 +237,7 @@ db.classes = {
 		name	: "Spear Fighter",
 		tier	: "tier1",
 		promoteTo : [ "sentinel", "basara" ],
+		parallel: "knight",
 		base	: new Stat(17, 6, 0, 6, 6, 2, 5, 2),
 		growth	: new Stat(15, 15, 0, 15, 15, 5, 10, 5),
 		maxStat	: new Stat(40, 22, 15, 23, 22, 21, 22, 21),
@@ -211,6 +263,7 @@ db.classes = {
 		name	: "Diviner",
 		tier	: "tier1",
 		promoteTo : [ "exorcist", "basara" ],
+		parallel: "mage",
 		base	: new Stat(15, 0, 4, 5, 6, 1, 1, 3),
 		growth	: new Stat(0, 5, 15, 10, 10, 5, 0, 10),
 		maxStat	: new Stat(35, 17, 22, 20, 23, 19, 16, 20),
@@ -262,6 +315,7 @@ db.classes = {
 		name	: "Sky Knight",
 		tier	: "tier1",
 		promoteTo : [ "falcoKnight", "kinshiKnight" ],
+		parallel: "wyvernRider",
 		base	: new Stat(16, 3, 0, 5, 7, 4, 2, 6),
 		growth	: new Stat(0, 10, 0, 10, 15, 20, 0, 20),
 		maxStat	: new Stat(35, 19, 16, 21, 23, 25, 18, 25),
@@ -287,6 +341,7 @@ db.classes = {
 		name	: "Archer",
 		tier	: "tier1",
 		promoteTo : [ "sniper", "kinshiKnight" ],
+		parallel: "outlaw",
 		base	: new Stat(17, 5, 0, 7, 5, 2, 4, 1),
 		growth	: new Stat(10, 15, 0, 15, 15, 5, 10, 0),
 		maxStat	: new Stat(40, 21, 15, 23, 21, 20, 20, 17),
@@ -304,6 +359,7 @@ db.classes = {
 		name 	: "Ninja",
 		tier	: "tier1",
 		promoteTo : [ "jounin", "mechanist" ],
+		parallel: "cavalier",
 		base 	: new Stat(16, 3, 0, 8, 8, 1, 3, 3),
 		growth 	: new Stat(5, 5, 0, 20, 20, 0, 5, 15),
 		maxStat : new Stat(35, 17, 15, 25, 25, 18, 19, 20),
@@ -329,6 +385,7 @@ db.classes = {
 		name	: "Kitsune",
 		tier	: "tier1",
 		promoteTo : [ "nineTails" ],
+		parallel: "apoth",
 		base	: new Stat(16, 5, 1, 6, 8, 4, 1, 4),
 		growth	: new Stat(10, 10, 0, 15, 20, 10, 0, 20),
 		maxStat	: new Stat(40, 20, 18, 23, 24, 24, 18, 23),
@@ -348,6 +405,7 @@ db.classes = {
 		name	: "Cavalier",
 		tier	: "tier1",
 		promoteTo : [ "paladin", "greatKnight" ],
+		parallel: "ninja",
 		base	: new Stat(17, 6, 0, 5, 5, 3, 5, 3),
 		growth	: new Stat(10, 15, 0, 10, 10, 15, 10, 5),
 		maxStat	: new Stat(40, 22, 15, 21, 20, 24, 22, 21),
@@ -373,6 +431,7 @@ db.classes = {
 		name	: "Knight",
 		tier	: "tier1",
 		promoteTo : [ "greatKnight", "general" ],
+		parallel: "lancer",
 		base	: new Stat(19, 8, 0, 5, 3, 3, 8, 1),
 		growth	: new Stat(20, 20, 0, 15, 5, 10, 20, 0),
 		maxStat	: new Stat(45, 24, 15, 22, 17, 22, 26, 18),
@@ -390,6 +449,7 @@ db.classes = {
 		name	: "Fighter",
 		tier	: "tier1",
 		promoteTo : [ "berserker", "hero" ],
+		parallel: "oni",
 		base	: new Stat(19, 7, 0, 6, 6, 2, 4, 1),
 		growth	: new Stat(20, 20, 0, 15, 15, 5, 5, 0),
 		maxStat	: new Stat(45, 25, 15, 23, 22, 21, 19, 18),
@@ -407,6 +467,7 @@ db.classes = {
 		name	: "Mercenary",
 		tier	: "tier1",
 		promoteTo : [ "hero", "bowKnight" ],
+		parallel: "samurai",
 		base	: new Stat(17, 5, 0, 7, 6, 2, 5, 2),
 		growth	: new Stat(10, 15, 0, 20, 15, 5, 10, 5),
 		maxStat	: new Stat(40, 22, 15, 24, 22, 20, 21, 19),
@@ -432,6 +493,7 @@ db.classes = {
 		name	: "Outlaw",
 		tier	: "tier1",
 		promoteTo : [ "bowKnight", "adventurer" ],
+		parallel: "archer",
 		base	: new Stat(16, 3, 1, 4, 8, 1, 2, 4),
 		growth	: new Stat(0, 10, 5, 10, 20, 0, 0, 20),
 		maxStat	: new Stat(35, 19, 18, 20, 24, 18, 17, 22),
@@ -449,6 +511,7 @@ db.classes = {
 		name	: "Wyvern Rider",
 		tier	: "tier1",
 		promoteTo : [ "wyvernLord", "maligKnight" ],
+		parallel: "pegKnight",
 		base	: new Stat(17, 6, 0, 5, 4, 2, 7, 0),
 		growth	: new Stat(10, 15, 5, 10, 10, 5, 20, 0),
 		maxStat	: new Stat(40, 22, 17, 21, 20, 19, 24, 15),
@@ -474,6 +537,7 @@ db.classes = {
 		name	: "Dark Mage",
 		tier	: "tier1",
 		promoteTo : [ "sorcerer", "darkKnight" ],
+		parallel: "diviner",
 		base	: new Stat(16, 0, 6, 3, 3, 1, 3, 5),
 		growth	: new Stat(0, 10, 20, 0, 10, 0, 5, 10),
 		maxStat	: new Stat(35, 19, 24, 16, 19, 18, 19, 22),
@@ -524,6 +588,7 @@ db.classes = {
 		name	: "Wolfskin",
 		tier	: "tier1",
 		promoteTo : [ "wolfssegner" ],
+		parallel: "outlaw",
 		base	: new Stat(19, 8, 0, 4, 6, 0, 4, 0),
 		growth	: new Stat(20, 20, 0, 5, 15, 5, 10, 0),
 		maxStat	: new Stat(45, 24, 15, 18, 22, 17, 21, 15),
@@ -542,6 +607,7 @@ db.classes = {
 	singer : {
 		name	: "Songstress",
 		tier	: "special",
+		parallel: "troubadour",
 		base	: new Stat(16, 3, 0, 6, 5, 3, 2, 3),
 		growth	: new Stat(0, 10, 0, 20, 20, 20, 0, 0),
 		maxStat	: new Stat(45, 28, 27, 31, 31, 35, 27, 28),
@@ -626,11 +692,9 @@ db.character = {
 		name	: "Corrin",
 		gender	: "either",
 		gen		: "avatar",
-		baseClass : db.classes.nohrPrince,
+		baseClass : "nohrPrince",
 		classSet  : [ "nohrPrince" ],
-		base	: {},
-		growth	: {},
-		cap		: {},
+		
 		route	: "All",
 		
 		baseMod	: {
@@ -713,7 +777,7 @@ db.character = {
 		name	: "Azura",
 		gender	: "F",
 		gen		: "mother",
-		baseClass : db.classes.singer,
+		baseClass : "singer",
 		classSet  : [ "singer", "pegKnight" ],
 		base 	: {
 			Standard : new BaseStat(1, 16, 5, 2, 8, 8, 6, 4, 7),
@@ -727,7 +791,7 @@ db.character = {
 		name	: "Kaze",
 		gender	: "M",
 		gen		: "father",
-		baseClass : db.classes.ninja,
+		baseClass : "ninja",
 		classSet  : [ "ninja", "samurai" ],
 		base: {
 			Standard : new BaseStat(3, 19, 7, 0, 9, 12, 4, 5, 10),
@@ -742,7 +806,7 @@ db.character = {
 		name	: "Gunter",
 		gender	: "M",
 		gen		: "exclusive",
-		baseClass : db.classes.greatKnight,
+		baseClass : "greatKnight",
 		classSet  : [ "cavalier", "mercenary", "wyvernRider" ],
 		base	: {
 			Standard : new BaseStat(3, 24, 10, 0, 15, 8, 9, 10, 4),
@@ -757,7 +821,7 @@ db.character = {
 		name	: "Felicia",
 		gender	: "F",
 		gen		: "mother",
-		baseClass : db.classes.maid,
+		baseClass : "maid",
 		classSet  : [ "troubadour", "mercenary" ],
 		base	: {
 			"First Joining" : new BaseStat(1, 19, 5, 9, 10, 10, 12, 5, 9),
@@ -773,7 +837,7 @@ db.character = {
 		name	: "Jakob",
 		gender	: "M",
 		gen		: "father",
-		baseClass : db.classes.maid,
+		baseClass : "maid",
 		classSet  : [ "troubadour", "cavalier" ],
 		base	: {
 			"First Joining" : new BaseStat(1, 21, 8, 6, 12, 9, 10, 7, 6),
@@ -789,7 +853,7 @@ db.character = {
 		name	: "Silas",
 		gender	: "M",
 		gen		: "father",
-		baseClass : db.classes.cavalier,
+		baseClass : "cavalier",
 		classSet  : [ "cavalier", "mercenary" ],
 		base	: {
 			Standard : new BaseStat(6, 22, 11, 0, 9, 8, 7, 10, 5),
@@ -803,7 +867,7 @@ db.character = {
 		name	: "Mozu",
 		gender	: "F",
 		gen		: "mother",
-		baseClass : db.classes.villager,
+		baseClass : "villager",
 		classSet  : [ "villager", "archer" ],
 		base	: {
 			Standard : new BaseStat(1, 16, 6, 0, 5, 7, 3, 4, 1),
@@ -817,7 +881,7 @@ db.character = {
 		name	: "Rinkah",
 		gender	: "F",
 		gen		: "mother",
-		baseClass : db.classes.oni,
+		baseClass : "oni",
 		classSet  : [ "oni", "ninja" ],
 		base	: {
 			Standard : new BaseStat(4, 20, 8, 2, 6, 8, 5, 10, 3),
@@ -831,7 +895,7 @@ db.character = {
 		name	: "Sakura",
 		gender	: "F",
 		gen		: "mother",
-		baseClass : db.classes.miko,
+		baseClass : "miko",
 		classSet  : [ "miko", "pegKnight" ],
 		base	: {
 			Standard : new BaseStat(1, 16, 3, 6, 5, 7, 9, 5, 7),
@@ -846,7 +910,7 @@ db.character = {
 		name	: "Hana",
 		gender	: "F",
 		gen		: "mother",
-		baseClass : db.classes.samurai,
+		baseClass : "samurai",
 		classSet  : [ "samurai", "miko" ],
 		base	: {
 			Standard : new BaseStat(4, 20, 9, 0, 11, 11, 5, 6, 9),
@@ -861,7 +925,7 @@ db.character = {
 		name	: "Subaki",
 		gender	: "M",
 		gen		: "father",
-		baseClass : db.classes.pegKnight,
+		baseClass : "pegKnight",
 		classSet  : [ "pegKnight", "samurai" ],
 		base	: {
 			Standard : new BaseStat(5, 22, 8, 0, 13, 10, 7, 9, 10),
@@ -875,7 +939,7 @@ db.character = {
 		name	: "Saizo",
 		gender	: "M",
 		gen		: "father",
-		baseClass : db.classes.ninja,
+		baseClass : "ninja",
 		classSet  : [ "ninja", "samurai" ],
 		base	: {
 			Standard : new BaseStat(7, 23, 11, 3, 14, 11, 9, 9, 7),
@@ -890,7 +954,7 @@ db.character = {
 		name	: "Orochi",
 		gender	: "F",
 		gen		: "mother",
-		baseClass : db.classes.diviner,
+		baseClass : "diviner",
 		classSet  : [ "diviner", "apoth" ],
 		base	: {
 			Standard : new BaseStat(5, 20, 0, 9, 11, 7, 6, 5, 10),
@@ -905,7 +969,7 @@ db.character = {
 		name	: "Hinoka",
 		gender	: "F",
 		gen		: "mother",
-		baseClass : db.classes.pegKnight,
+		baseClass : "pegKnight",
 		classSet  : [ "pegKnight", "lancer" ],
 		base	: {
 			Standard : new BaseStat(8, 23, 9, 4, 13, 16, 12, 9, 15),
@@ -920,7 +984,7 @@ db.character = {
 		name	: "Azama",
 		gender	: "M",
 		gen		: "father",
-		baseClass : db.classes.monk,
+		baseClass : "monk",
 		classSet  : [ "monk", "apoth" ],
 		base	: {
 			Standard : new BaseStat(7, 24, 9, 7, 9, 10, 12, 10, 8),
@@ -935,7 +999,7 @@ db.character = {
 		name	: "Setsuna",
 		gender	: "F",
 		gen		: "mother",
-		baseClass : db.classes.archer,
+		baseClass : "archer",
 		classSet  : [ "archer", "ninja" ],
 		base	: {
 			Standard : new BaseStat(3, 19, 8, 0, 9, 10, 6, 5, 3),
@@ -950,7 +1014,7 @@ db.character = {
 		name	: "Hayato",
 		gender	: "M",
 		gen		: "father",
-		baseClass : db.classes.diviner,
+		baseClass : "diviner",
 		classSet  : [ "diviner", "oni" ],
 		base	: {
 			Standard : new BaseStat(1, 16, 1, 4, 5, 7, 8, 4, 5),
@@ -965,7 +1029,7 @@ db.character = {
 		name	: "Oboro",
 		gender	: "F",
 		gen		: "mother",
-		baseClass : db.classes.lancer,
+		baseClass : "lancer",
 		classSet  : [ "lancer", "apoth" ],
 		base	: {
 			Standard : new BaseStat(10, 25, 13, 0, 11, 12, 11, 13, 8),
@@ -979,7 +1043,7 @@ db.character = {
 		name	: "Hinata",
 		gender	: "M",
 		gen		: "father",
-		baseClass : db.classes.samurai,
+		baseClass : "samurai",
 		classSet  : [ "samurai", "oni" ],
 		base	: {
 			Standard : new BaseStat(10, 26, 11, 0, 9, 14, 10, 12, 4),
@@ -993,7 +1057,7 @@ db.character = {
 		name	: "Takumi",
 		gender	: "M",
 		gen		: "father",
-		baseClass : db.classes.archer,
+		baseClass : "archer",
 		classSet  : [ "archer", "lancer" ],
 		base	: {
 			Standard : new BaseStat(11, 26, 13, 0, 17, 11, 13, 10, 4),
@@ -1007,7 +1071,7 @@ db.character = {
 		name	: "Kagero",
 		gender	: "F",
 		gen		: "mother",
-		baseClass : db.classes.ninja,
+		baseClass : "ninja",
 		classSet  : [ "ninja", "diviner" ],
 		base	: {
 			Standard : new BaseStat(10, 22, 15, 0, 10, 12, 7, 9, 10),
@@ -1021,7 +1085,7 @@ db.character = {
 		name	: "Kaden",
 		gender	: "M",
 		gen		: "father",
-		baseClass : db.classes.kitsune,
+		baseClass : "kitsune",
 		classSet  : [ "kitsune", "diviner" ],
 		base	: {
 			Standard : new BaseStat(14, 30, 15, 1, 12, 19, 14, 9, 14),
@@ -1035,7 +1099,7 @@ db.character = {
 		name	: "Ryoma",
 		gender	: "M",
 		gen		: "father",
-		baseClass : db.classes.swordSaint,
+		baseClass : "swordSaint",
 		classSet  : [ "samurai", "pegKnight" ],
 		base	: {
 			Standard : new BaseStat(4, 36, 20, 2, 18, 24, 20, 16, 13),
@@ -1049,7 +1113,7 @@ db.character = {
 		name	: "Elise",
 		gender	: "F",
 		gen		: "mother",
-		baseClass : db.classes.troubadour,
+		baseClass : "troubadour",
 		classSet  : [ "troubadour", "wyvernRider" ],
 		base	: {
 			Standard : new BaseStat(5, 19, 2, 11, 5, 10, 14, 4, 11),
@@ -1064,7 +1128,7 @@ db.character = {
 		name	: "Effie",
 		gender	: "F",
 		gen		: "mother",
-		baseClass : db.classes.knight,
+		baseClass : "knight",
 		classSet  : [ "knight", "troubadour" ],
 		base	: {
 			Standard : new BaseStat(6, 23, 13, 0, 8, 5, 10, 12, 4),
@@ -1079,7 +1143,7 @@ db.character = {
 		name	: "Arthur",
 		gender	: "M",
 		gen		: "father",
-		baseClass : db.classes.fighter,
+		baseClass : "fighter",
 		classSet  : [ "fighter", "cavalier" ],
 		base	: {
 			Standard : new BaseStat(7, 24, 12, 0, 9, 8, 1, 9, 4),
@@ -1094,7 +1158,7 @@ db.character = {
 		name	: "Odin",
 		gender	: "M",
 		gen		: "father",
-		baseClass : db.classes.mage,
+		baseClass : "mage",
 		classSet  : [ "mage", "samurai" ],
 		base	: {
 			Standard : new BaseStat(5, 21, 5, 8, 10, 7, 9, 6, 7),
@@ -1109,7 +1173,7 @@ db.character = {
 		name	: "Niles",
 		gender	: "M",
 		gen		: "father",
-		baseClass : db.classes.outlaw,
+		baseClass : "outlaw",
 		classSet  : [ "outlaw", "mage" ],
 		base	: {
 			Standard : new BaseStat(8, 22, 9, 5, 9, 15, 6, 7, 12),
@@ -1124,7 +1188,7 @@ db.character = {
 		name	: "Nyx",
 		gender	: "F",
 		gen		: "mother",
-		baseClass : db.classes.mage,
+		baseClass : "mage",
 		classSet  : [ "mage", "outlaw" ],
 		base	: {
 			Standard : new BaseStat(9, 20, 1, 12, 5, 11, 3, 4, 8),
@@ -1138,7 +1202,7 @@ db.character = {
 		name	: "Camilla",
 		gender	: "F",
 		gen		: "mother",
-		baseClass : db.classes.maligKnight,
+		baseClass : "maligKnight",
 		classSet  : [ "wyvernRider", "mage" ],
 		base	: {
 			Standard : new BaseStat(1, 30, 19, 11, 15, 19, 12, 18, 15),
@@ -1152,7 +1216,7 @@ db.character = {
 		name	: "Selena",
 		gender	: "F",
 		gen		: "mother",
-		baseClass : db.classes.mercenary,
+		baseClass : "mercenary",
 		classSet  : [ "mercenary", "pegKnight" ],
 		base	: {
 			Standard : new BaseStat(10, 24, 12, 3, 12, 15, 9, 11, 8),
@@ -1166,7 +1230,7 @@ db.character = {
 		name	: "Beruka",
 		gender	: "F",
 		gen		: "mother",
-		baseClass : db.classes.wyvernRider,
+		baseClass : "wyvernRider",
 		classSet  : [ "wyvernRider", "fighter" ],
 		base	: {
 			Standard : new BaseStat(9, 23, 13, 0, 14, 9, 10, 14, 7),
@@ -1180,7 +1244,7 @@ db.character = {
 		name	: "Laslow",
 		gender	: "M",
 		gen		: "father",
-		baseClass : db.classes.mercenary,
+		baseClass : "mercenary",
 		classSet  : [ "mercenary", "ninja" ],
 		base	: {
 			Standard : new BaseStat(12, 28, 15, 0, 16, 13, 14, 10, 7),
@@ -1195,7 +1259,7 @@ db.character = {
 		name	: "Peri",
 		gender	: "F",
 		gen		: "mother",
-		baseClass : db.classes.cavalier,
+		baseClass : "cavalier",
 		classSet  : [ "cavalier", "mage" ],
 		base	: {
 			Standard : new BaseStat(10, 25, 13, 0, 9, 13, 9, 10, 10),
@@ -1210,7 +1274,7 @@ db.character = {
 		name	: "Charlotte",
 		gender	: "F",
 		gen		: "mother",
-		baseClass : db.classes.fighter,
+		baseClass : "fighter",
 		classSet  : [ "fighter", "troubadour" ],
 		base	: {
 			Standard : new BaseStat(10, 28, 15, 0, 10, 13, 9, 8, 2),
@@ -1224,7 +1288,7 @@ db.character = {
 		name	: "Benny",
 		gender	: "M",
 		gen		: "father",
-		baseClass : db.classes.knight,
+		baseClass : "knight",
 		classSet  : [ "knight", "fighter" ],
 		base	: {
 			Standard : new BaseStat(15, 31, 15, 0, 15, 6, 12, 19, 10),
@@ -1238,7 +1302,7 @@ db.character = {
 		name	: "Leo",
 		gender	: "M",
 		gen		: "father",
-		baseClass : db.classes.darkKnight,
+		baseClass : "darkKnight",
 		classSet  : [ "mage", "troubadour" ],
 		base	: {
 			Standard : new BaseStat(2, 34, 14, 20, 14, 15, 15, 16, 20),
@@ -1252,7 +1316,7 @@ db.character = {
 		name	: "Keaton",
 		gender	: "M",
 		gen		: "father",
-		baseClass : db.classes.wolfskin,
+		baseClass : "wolfskin",
 		classSet  : [ "wolfskin", "fighter" ],
 		base	: {
 			Standard : new BaseStat(15, 35, 19, 0, 10, 13, 9, 16, 7),
@@ -1266,7 +1330,7 @@ db.character = {
 		name	: "Xander",
 		gender	: "M",
 		gen		: "father",
-		baseClass : db.classes.paladin,
+		baseClass : "paladin",
 		classSet  : [ "cavalier", "wyvernRider" ],
 		base	: {
 			Standard : new BaseStat(4, 38, 23, 4, 18, 15, 20, 23, 11),
@@ -1280,7 +1344,7 @@ db.character = {
 		name	: "Reina",
 		gender	: "F",
 		gen		: "exclusive",
-		baseClass : db.classes.kinshiKnight,
+		baseClass : "kinshiKnight",
 		classSet  : [ "pegKnight", "diviner", "ninja" ],
 		base	: {
 			Standard : new BaseStat(1, 28, 17, 5, 14, 20, 14, 10, 13),
@@ -1295,7 +1359,7 @@ db.character = {
 		name	: "Scarlet",
 		gender	: "F",
 		gen		: "exclusive",
-		baseClass : db.classes.wyvernLord,
+		baseClass : "wyvernLord",
 		classSet  : [ "wyvernRider", "outlaw", "knight" ],
 		base	: {
 			Standard : new BaseStat(1, 30, 23, 4, 17, 19, 14, 22, 6),
@@ -1310,7 +1374,7 @@ db.character = {
 		name	: "Flora",
 		gender	: "F",
 		gen		: "exclusive",
-		baseClass : db.classes.maid,
+		baseClass : "maid",
 		classSet  : [ "troubadour", "mage", "mercenary" ],
 		base	: {
 			Standard : new BaseStat(5, 29, 18, 16, 25, 15, 11, 14, 23),
@@ -1324,7 +1388,7 @@ db.character = {
 		name	: "Shura",
 		gender	: "M",
 		gen		: "exclusive",
-		baseClass : db.classes.adventurer,
+		baseClass : "adventurer",
 		classSet  : [ "outlaw", "ninja", "fighter" ],
 		base	: {
 			Standard : new BaseStat(10, 34, 20, 11, 23, 27, 15, 14, 24),
@@ -1339,7 +1403,7 @@ db.character = {
 		name	: "Izana",
 		gender	: "M",
 		gen		: "exclusive",
-		baseClass : db.classes.exorcist,
+		baseClass : "exorcist",
 		classSet  : [ "monk", "samurai", "apoth" ],
 		base	: {
 			Standard : new BaseStat(5, 31, 8, 23, 25, 18, 17, 14, 24),
@@ -1353,7 +1417,7 @@ db.character = {
 		name	: "Yukimura",
 		gender	: "M",
 		gen		: "exclusive",
-		baseClass : db.classes.mechanist,
+		baseClass : "mechanist",
 		classSet  : [ "apoth", "samurai", "monk" ],
 		base	: {
 			Standard : new BaseStat(10, 38, 25, 3, 29, 23, 18, 21, 22),
@@ -1367,7 +1431,7 @@ db.character = {
 		name	: "Fuga",
 		gender	: "M",
 		gen		: "exclusive",
-		baseClass : db.classes.weaponMaster,
+		baseClass : "weaponMaster",
 		classSet  : [ "samurai", "oni", "monk" ],
 		base	: {
 			Standard : new BaseStat(10, 41, 29, 0, 27, 25, 18, 29, 15),
@@ -1381,7 +1445,7 @@ db.character = {
 		name	: "Anna",
 		gender	: "F",
 		gen		: "exclusive",
-		baseClass : db.classes.outlaw,
+		baseClass : "outlaw",
 		classSet  : [ "outlaw", "troubadour", "apoth" ],
 		base	: {
 			Standard : new BaseStat(10, 23, 9, 11, 10, 14, 15, 6, 15),
@@ -1395,11 +1459,7 @@ db.character = {
 		name	: "Kanna",
 		gender	: "either",
 		gen		: "avatarChild",
-		baseClass : db.classes.nohrPrince,
-		classSet  : [ "nohrPrince" ],
-		base	: {},
-		growth	: {},
-		cap		: {},
+		baseClass : "nohrPrince",
 		route	: "Children",
 		
 		fixedParent	: "kamui",
@@ -1411,11 +1471,7 @@ db.character = {
 		name	: "Shigure",
 		gender	: "M",
 		gen		: "child",
-		baseClass : db.classes.pegKnight,
-		classSet  : [ "pegKnight" ],
-		base	: {},
-		growth	: {},
-		cap		: {},
+		baseClass : "pegKnight",
 		route	: "Children",
 		
 		fixedParent	: "azura",
@@ -1427,15 +1483,247 @@ db.character = {
 		name	: "Dwyer",
 		gender	: "M",
 		gen		: "child",
-		baseClass : db.classes.troubadour,
-		classSet  : [ "troubadour" ],
-		base	: {},
-		growth	: {},
-		cap		: {},
+		baseClass : "troubadour",
 		route	: "Children",
 		
 		fixedParent	: "jakob",
-		childBase	: new BaseStat(10, 8, 7, 7, 2, 6, 4, 6, 7),
+		childBase	: new BaseStat(10, 8, 7, 7, 2, 6, 4, 6),
 		childGrowth	: new Stat(45, 45, 30, 20, 30, 30, 30, 35),
+	}),
+	
+	sophie : new Character({
+		name	: "Sophie",
+		gender	: "F",
+		gen		: "child",
+		baseClass : "cavalier",
+		route	: "Children",
+		
+		fixedParent : "silas",
+		childBase	: new BaseStat(10, 8, 6, 2, 7, 6, 7, 4, 6),
+		childGrowth : new BaseStat(35, 35, 10, 55, 50, 35, 25, 35),
+	}),
+	
+	midori : new Character({
+		name	: "Midori",
+		gender	: "F",
+		gen		: "child",
+		baseClass : "apoth",
+		route	: "Children",
+		
+		fixedParent : "kaze",
+		childBase	: new BaseStat(10, 8, 6, 2, 10, 4, 10, 4, 2),
+		childGrowth : new Stat(45, 35, 5, 55, 35, 50, 30, 20),
+	}),
+	
+	shiro : new Character({
+		name	: "Shiro",
+		gender	: "M",
+		gen		: "child",
+		baseClass : "lancer",
+		route	: "Children",
+		
+		fixedParent : "ryoma",
+		childBase	: new BaseStat(10, 8, 7, 0, 5, 3, 6, 8, 5),
+		childGrowth	: new Stat(50, 50, 0, 40, 35, 35, 45, 30),
+		revParent	: [ "camilla", "elise" ],
+		nonParent	: [ "hinoka", "sakura" ],
+	}),
+	
+	kiragi : new Character({
+		name	: "Kiragi",
+		gender	: "M",
+		gen		: "child",
+		baseClass : "archer",
+		route	: "Children",
+		
+		fixedParent	: "takumi",
+		childBase	: new BaseStat(10, 7, 6, 0, 5, 6, 8, 4, 1),
+		childGrowth	: new Stat(45, 40, 0, 45, 50, 45, 40, 15),
+		revParent	: [ "camilla", "elise" ],
+		nonParent	: [ "hinoka", "sakura" ],
+	}),
+	
+	asugi : new Character({
+		name	: "Asugi",
+		gender	: "M",
+		gen		: "child",
+		baseClass : "ninja",
+		route	: "Children",
+		
+		fixedParent	: "saizou",
+		childBase	: new BaseStat(10, 6, 7, 4, 7, 6, 9, 4, 9),
+		childGrowth	: new Stat(40, 45, 50, 55, 45, 50, 30, 20),
+		revParent	: [ "charlotte", "beruka" ],
+	}),
+	
+	selkie : new Character({
+		name	: "Selkie",
+		gender	: "F",
+		gen		: "child",
+		baseClass : "kitsune",
+		route	: "Children",
+		
+		fixedParent	: "kaden",
+		childBase	: new BaseStat(10, 7, 4, 3, 6, 7, 10, 6, 11),
+		childGrowth	: new Stat(35, 30, 15, 35, 55, 60, 30, 50),
+		revParent	: [ "charlotte", "peri" ],
+	}),
+	
+	hisame : new Character({
+		name	: "Hisame",
+		gender	: "M",
+		gen		: "child",
+		baseClass : "samurai",
+		route	: "Children",
+		
+		fixedParent	: "hinata",
+		childBase	: new BaseStat(10, 6, 6, 1, 7, 5, 4, 5, 4),
+		childGrowth	: new Stat(50, 40, 0, 40, 40, 25, 30, 20),
+		revParent	: [ "peri", "selena" ],
+	}),
+	
+	mitama : new Character({
+		name	: "Mitama",
+		gender	: "F",
+		gen		: "child",
+		baseClass : "miko",
+		route	: "Children",
+		
+		fixedParent	: "azama",
+		childBase	: new BaseStat(10, 6, 7, 6, 6, 8, 10, 3, 5),
+		childGrowth	: new Stat(45, 40, 35, 45, 50, 50, 30, 20),
+		revParent	: [ "effie", "beruka" ],
+	}),
+	
+	matoi : new Character({
+		name	: "Caeldori",
+		gender	: "F",
+		gen		: "child",
+		baseClass : "pegKnight",
+		route	: "Children",
+		
+		fixedParent	: "tsubaki",
+		childBase	: new BaseStat(10, 8, 8, 3, 5, 6, 9, 5, 6),
+		childGrowth	: new Stat(55, 35, 15, 40, 40, 45, 35, 20),
+		revParent	: [ "selena", "nyx" ],
+	}),
+	
+	rhajat : new Character({
+		name	: "Rhajat",
+		gender	: "F",
+		gen		: "child",
+		baseClass : "diviner",
+		route	: "Children",
+		
+		fixedParent	: "hayato",
+		childBase	: new BaseStat(10, 8, 1, 10, 0, 7, 6, 5, 12),
+		childGrowth	: new Stat(40, 15, 60, 10, 50, 30, 25, 35),
+		revParent	: [ "effie", "nyx" ],
+	}),
+	
+	siegbert : new Character({
+		name 	: "Siegbert",
+		gender	: "M",
+		gen		: "child",
+		baseClass : "cavalier",
+		route	: "Children",
+		
+		fixedParent : "xander",
+		childBase	: new BaseStat(10, 7, 5, 2, 7, 6, 7, 6, 3),
+		childGrowth	: new Stat(40, 45, 5, 45, 45, 45, 35, 20),
+		revParent	: [ "hinoka", "sakura" ],
+		nonParent	: [ "camilla", "elise" ],
+	}),
+	
+	foleo : new Character({
+		name	: "Forrest",
+		gender	: "M",
+		gen		: "child",
+		baseClass : "troubadour",
+		route	: "Children",
+		
+		fixedParent	: "leo",
+		childBase	: new BaseStat(10, 8, 5, 9, 1, 4, 5, 6, 13),
+		childGrowth	: new Stat(55, 15, 65, 20, 35, 25, 25, 55),
+		revParent	: [ "hinoka", "sakura" ],
+		nonParent	: [ "camilla", "elise" ],
+	}),
+	
+	ignatius : new Character({
+		name	: "Ignatius",
+		gender	: "M",
+		gen		: "child",
+		baseClass : "knight",
+		route	: "Children",
+		
+		fixedParent	: "benny",
+		childBase	: new BaseStat(10, 8, 7, 0, 6, 4, 7, 6, 7, 4),
+		childGrowth	: new Stat(40, 50, 0, 40, 30, 55, 45, 35),
+		revParent	: [ "rinkah", "oboro" ],
+	}),
+	
+	velouria : new Character({
+		name	: "Velouria",
+		gender	: "F",
+		gen		: "child",
+		baseClass : "wolfskin",
+		route	: "Children",
+		
+		fixedParent	: "keaton",
+		childBase	: new BaseStat(10, 7, 6, 0, 6, 6, 11, 9, 8),
+		childGrowth	: new Stat(50, 50, 0, 40, 40, 35, 45, 30),
+		revParent	: [ "rinkah", "hana" ],
+	}),
+	
+	percy : new Character({
+		name	: "Percy",
+		gender	: "M",
+		gen		: "child",
+		baseClass : "wyvernRider",
+		route	: "Children",
+		
+		fixedParent	: "arthur",
+		childBase	: new BaseStat(10, 6, 4, 0, 6, 6, 15, 8, 4, 7),
+		childGrowth	: new Stat(30, 30, 5, 45, 40, 75, 55, 15),
+		revParent	: [ "kagero", "setsuna" ],
+	}),
+	
+	ophelia : new Character({
+		name	: "Ophelia",
+		gender	: "F",
+		gen		: "child",
+		baseClass : "mage",
+		route	: "Children",
+		
+		fixedParent	: "odin",
+		childBase	: new BaseStat(10, 7, 3, 6, 6, 7, 12, 2, 5),
+		childGrowth	: new Stat(45, 15, 45, 40, 45, 65, 20, 30),
+		revParent	: [ "orochi", "kagero" ],
+	}),
+	
+	soleil : new Character({
+		name	: "Soleil",
+		gender	: "F",
+		gen		: "child",
+		baseClass : "mercenary",
+		route	: "Children",
+		
+		fixedParent	: "laslow",
+		childBase	: new BaseStat(10, 6, 7, 1, 3, 6, 7, 5, 6),
+		childGrowth	: new Stat(25, 60, 0, 35, 35, 45, 35, 40),
+		revParent	: [ "orochi", "hana" ],
+	}),
+	
+	nina : new Character({
+		name	: "Nina",
+		gender	: "F",
+		gen		: "child",
+		baseClass : "outlaw",
+		route	: "Children",
+		
+		fixedParent	: "niles",
+		childBase	: new BaseStat(10, 5, 8, 5, 5, 5, 11, 3, 10),
+		childGrowth	: new Stat(30, 45, 30, 35, 40, 50, 25, 45),
+		revParent	: [ "setsuna", "oboro" ],
 	}),
 }

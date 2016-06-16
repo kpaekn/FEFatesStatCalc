@@ -8,6 +8,7 @@ $(document).ready(function() {
 	db.character.kamui.initialize($("#boon-select").val(), $("#bane-select").val());
 	for (var i=1; i<=20; i++)
 		$("#extra-select").append($("<option>").val(i*5).text(i + " (+" + i*5 + " levels)"));
+	$("#base-select").prop("disabled", true).empty().append($("<option/>").text("Select a base"));
 	resetPanel();
 	
 	var unitList = {};
@@ -58,14 +59,17 @@ $(document).ready(function() {
 			var base = updateBaseSelection(this.value);
 			var parentList = db.character[this.value].getParentList();
 			updateParentList(parentList);
+			updateGrandparentList();
 			if (!parentList) {
 				calc.setCharacter(this.value, base);
 				updateLevelSelect();
 				updateTable();
-			}
-			updateGrandparentList();
-		}else
+			}else
+				resetPanel();
+		}else {
+			$("#base-select").prop("disabled", true).empty().append($("<option/>").text("Select a base"));
 			resetPanel();
+		}
 	});
 	
 	$("#parent-select").change(function() {
@@ -161,7 +165,6 @@ $(document).ready(function() {
 	function resetPanel() {
 		$("#level-change-select").prop("disabled", true).empty().append($("<option/>").text("Select a level"));
 		$("#class-change-select").prop("disabled", true).empty().append($("<option/>").text("Select a class"));
-		$("#base-select").prop("disabled", true).empty().append($("<option/>").text("Select a base"));
 		$("#add-seal").attr("disabled", true);
 		$("#reset").attr("disabled", true);
 	}
@@ -175,7 +178,7 @@ $(document).ready(function() {
 	
 	function toggleAptitude() {
 		var unit = $("#unit-select").val();
-		if (unit == "mozume" || db.character[unit].gen == "child" || db.character[unit].gen == "avatarChild")
+		if (unit == "mozume" || (db.character[unit] && (db.character[unit].gen == "child" || db.character[unit].gen == "avatarChild")))
 			$("#aptitude-check").show(ANIMATION_SPEED);
 		else
 			$("#aptitude-check").hide(ANIMATION_SPEED);

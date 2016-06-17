@@ -1487,7 +1487,7 @@ db.character = {
 		route	: "Children",
 		
 		fixedParent	: "jakob",
-		childBase	: new BaseStat(10, 8, 7, 7, 2, 6, 4, 6),
+		childBase	: new BaseStat(10, 8, 7, 7, 2, 6, 4, 6, 7),
 		childGrowth	: new Stat(45, 45, 30, 20, 30, 30, 30, 35),
 	}),
 	
@@ -1500,7 +1500,7 @@ db.character = {
 		
 		fixedParent : "silas",
 		childBase	: new BaseStat(10, 8, 6, 2, 7, 6, 7, 4, 6),
-		childGrowth : new BaseStat(35, 35, 10, 55, 50, 35, 25, 35),
+		childGrowth : new Stat(35, 35, 10, 55, 50, 35, 25, 35),
 	}),
 	
 	midori : new Character({

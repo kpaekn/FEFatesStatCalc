@@ -248,11 +248,12 @@ $(document).ready(function() {
 		headerRow.append($("<th/>").text("Level"));
 		for (var attr in levelList[0][0].stat)
 			headerRow.append($("<th/>").text(attr));
-		table.append(headerRow);
+		table.append($("<thead/>").append(headerRow));
 		
+		var tableBody = $("<tbody/>");
 		for (var i=0; i<levelList.length; i++) {
 			var header = $("<tr/>").append($("<th/>").text(levelList[i][0].unitClass.name).attr("colspan", 9));
-			table.append(header);
+			tableBody.append(header);
 			
 			// Data
 			for (var j=0; j<levelList[i].length; j++) {
@@ -268,19 +269,19 @@ $(document).ready(function() {
 						cell = $("<td/>").text(val);
 					row.append(cell);
 				}
-				table.append(row);
+				tableBody.append(row);
 			}
 			// Cap
 			var capRow = $("<tr/>");
-			capRow.append($("<th/>").text("Cap"));
+			capRow.append($("<td/>").append($("<span/>").addClass("cap-td").text("Cap")));
 			for (var attr in levelList[i][0].statCap)
-				capRow.append($("<th/>").text(levelList[i][0].statCap[attr]));
-			table.append(capRow);
+				capRow.append($("<td/>").append($("<span/>").addClass("cap-td").text(levelList[i][0].statCap[attr])));
+			tableBody.append(capRow);
 			
 		}
 		
 		//$("#table-div").append(header);
-		$("#table-div").append(table);
+		$("#table-div").append(table.append(tableBody));
 	}
 });
 

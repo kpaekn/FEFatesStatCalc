@@ -9,13 +9,34 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 	<style>
-		.unit-selector {
-			width : 150px;
-		}
+		.unit-selector { width : 150px;	}
 		
-		.minor-select {
-			width : 120px;
-		}
+		.minor-select {	width : 120px; }
+		
+        //table { width: 100%; }
+
+        thead, tbody, tr, td, th { display: block; }
+
+        tr:after {
+            content: ' ';
+            display: block;
+            visibility: hidden;
+            clear: both;
+        }
+
+        thead th { height: 30px; }
+
+        tbody {
+            height: 800px;
+            overflow-y: auto;
+        }
+
+        tbody td, thead th {
+            width: 10%;
+            float: left;
+        }
+		
+		.cap-td { font-weight:bold }
 	</style>
     <title>Fire Emblem Fates: Character Average Stats</title>
 	</head>

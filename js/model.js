@@ -104,8 +104,11 @@ Character.prototype.evaluateChildStat = function() {
 	var secondClass = fixedParent.classSet[0];
 	if (secondClass == "singer" || secondClass == this.baseClass) {
 		secondClass = fixedParent.classSet[1];
-		if (secondClass == this.baseClass && fixedParent.classSet[0] == "singer")
+		if (secondClass == this.baseClass && fixedParent.classSet[0] == "singer") {
 			secondClass = db.classes[fixedParent.classSet[0]].parallel;
+			if (secondClass == this.varParent.classSet[0])
+				secondClass = db.classes[fixedParent.classSet[1]].parallel;
+		}
 	}
 	var thirdClass = this.varParent.classSet[0];
 	if (thirdClass == "singer" || thirdClass == this.baseClass || thirdClass == secondClass) {

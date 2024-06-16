@@ -241,7 +241,7 @@ $(document).ready(function() {
 		var levelList = calc.compute();
 		$("#table-div").empty();
 		
-		var table = $("<table/>").addClass("table table-sm table-striped table-bordered table-hover table-condensed").attr("style", "width: 550px");
+		var table = $("<table/>").addClass("table table-sm table-striped table-bordered table-hover table-condensed").attr("style", "width: 535px");
 
 		// Headings
 		var headerRow = $("<tr/>");
